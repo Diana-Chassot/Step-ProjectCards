@@ -1,0 +1,27 @@
+/* general  */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Montserrat", sans-serif;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+header {
+    height: 160px;
+}
+
+.logo-img {
+    max-height: 150px;
+}
+
+.visits__start,
+.visits__created {
+    display: none;
+}
