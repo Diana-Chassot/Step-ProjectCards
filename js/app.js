@@ -1,11 +1,11 @@
 /* Марианна нужно добавить ивент на кнопку с моей функцией postCards() которая будет принимать твои данные */
 
-
 function customHttp() {
   const API_TOKEN = "7230c3ef-1075-4f6e-bdbd-9c4639644533";
   const API_URL = "https://ajax.test-danit.com/api/v2/cards";
   return { API_TOKEN, API_URL };
 }
+/* Отправка карточек*/
 function postCards() {
   const { API_TOKEN, API_URL } = customHttp();
   fetch(API_URL, {
@@ -24,7 +24,7 @@ function postCards() {
     .then(response => checkStatusResponse(response))
     .then(data => console.log(data))
 }
-
+/* Получение отправленных карточек */
 function getCards() {
   const { API_TOKEN, API_URL } = customHttp();
   fetch(API_URL, {
@@ -44,7 +44,8 @@ function getCards() {
 
     })
 }
-getCards()
+
+/* checkStatusResponse */
 function checkStatusResponse(response) {
   if (response.ok) {
     return response.json();
@@ -52,34 +53,35 @@ function checkStatusResponse(response) {
     throw new Error('Error');
   }
 };
+/* карточка */
 class Card {
   constructor({ nameClient, nameDoc, briefVisitDescr, urgency, id }) {
     this.nameClient = nameClient;
     this.nameDoctor = nameDoc;
     this.briefVisitDescription = briefVisitDescr;
     this.urgency = urgency;
-    this.id = id ;
+    this.id = id;
 
-   /*  this.deleteBtn = this.queryselector(".")
-    this.editBtn = this.queryselector(".")
-
-    this.deleteBtn.addEventListener("click", this.deleteCard.bind(this))
-    this.editBtn.addEventListener("click", this.editCard.bind(this)) */
+    /* кнопки будущие */
+      
+   
 
   }
+  /* удаление карточки . не доделано */
   deleteCard() {
-    fetch("https://ajax.test-danit.com/api/v2/cards/1", {
+    const { API_TOKEN, API_URL } = customHttp();
+    fetch(API_URL, {
       method: 'DELETE',
       headers: {
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${API_TOKEN}`
       },
     })
   }
-
+  /* корректировка карточки. не доделано*/
   editCard() {
-    // Обработчик события для кнопки редактирования
+    
   }
-
+  /* разметка карточки */
   templateCard() {
     const card = `
     <div class="col-xl" style="max-width: 15rem">
@@ -115,8 +117,9 @@ class Card {
       </div>
     </div>
     `
-    return card
+    return card;
   }
+  /* добавление карточки в разметку */
   renderCard() {
     const cardsContent = document.querySelector(".cards-content");
 
@@ -124,3 +127,4 @@ class Card {
     cardsContent.insertAdjacentHTML("afterbegin", fragment)
   }
 }
+getCards()
