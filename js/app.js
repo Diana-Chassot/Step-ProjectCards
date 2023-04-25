@@ -1,3 +1,6 @@
+/* Марианна нужно добавить ивент на кнопку с моей функцией postCards() которая будет принимать твои данные */
+
+
 function customHttp() {
   const API_TOKEN = "7230c3ef-1075-4f6e-bdbd-9c4639644533";
   const API_URL = "https://ajax.test-danit.com/api/v2/cards";
