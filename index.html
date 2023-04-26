@@ -28,13 +28,44 @@
                         <img class="logo-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_kkvpVs2FkRiZu1B2JjAjEUNXdQr4fvDiEiCPlZi3bgOf_keRLC8TyYYGTmsyVlYDKTY&usqp=CAU" alt="logo">
                     </a>
 
-                    <button type="button" class="btn btn-outline-secondary">Log in</button>
+                    <div id="log-in-div">
+                        <button type="button" class="btn btn-outline-secondary" id="log-in-btn" data-bs-toggle="modal" data-bs-target="#logInModal">Sign in</button>
+                    </div>
+
+                    <div id="create-visit-div" class="hidden-element">
+                        <button type="button" class="btn btn-success" id="create-visit-btn">Create visit</button>
+                    </div>
+
                 </div>
             </nav>
         </div>
-        <hr>
     </header>
 
+    <!-- Modal form for log in -->
+    <div class="modal fade" id="logInModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <!-- <label for="recipient-name" class="col-form-label">Login:</label> -->
+                        <label for="user-email" class="col-form-label">Email:</label>
+                        <input type="email" class="form-control" id="user-email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="user-password" class="col-form-label">Password:</label>
+                        <input type="password" class="form-control" id="user-password">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="log-in-btn-modal">Sign in</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <hr>
     <main>
         <div class="container">
             <!-- form for filtering visits -->
@@ -44,10 +75,10 @@
 
             <!-- list of created visits -->
             <div class="visits">
-                <div class="visits__start text-center">
+                <div class="visits-no-items text-center hidden-element">
                     <p>No items have been added</p>
                 </div>
-                <div class="visits__created col-4">
+                <div class="visits-created col-4">
 
                 </div>
 

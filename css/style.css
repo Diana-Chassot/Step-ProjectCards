@@ -7,11 +7,12 @@
 
 body {
     font-family: "Montserrat", sans-serif;
-  }
+}
+
   .container {
     max-width: 1200px;
     margin: 0 auto;
-  }
+}
 
 header {
     height: 160px;
@@ -23,5 +24,9 @@ header {
 
 .visits__start,
 .visits__created {
+    display: none;
+}
+
+.hidden-element {
     display: none;
 }
