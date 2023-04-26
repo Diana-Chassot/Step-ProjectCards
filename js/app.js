@@ -34,8 +34,8 @@ async function postCards() {
       },
       body: JSON.stringify({
         nameClient: "ExapmleName",
-        nameDoctor: "DoctorExample",
-        briefVisitDesc: "here will be data",
+        doctor: "DoctorExample",
+        briefVisitDescr: "here will be data",
         urgency: "here will be data"
         /* какие еще данные нужны? */
       })
@@ -52,7 +52,6 @@ async function postCards() {
     console.error(error);
   }
 };
-
 /*Get Cards */
 async function getCards() {
 
@@ -121,9 +120,9 @@ function hideSpinner() {
 /* Card class and methodes delete, edit, render  */
 class Card {
 
-  constructor({ nameClient, nameDoc, briefVisitDescr, urgency, id /* больше данных */ }) {
+  constructor({ nameClient, doc, briefVisitDescr, urgency, id /* больше данных */ }) {
     this.nameClient = nameClient;
-    this.nameDoctor = nameDoc;
+    this.doctor = doc;
     this.briefVisitDescription = briefVisitDescr;
     this.urgency = urgency;
     this.id = id;
@@ -170,7 +169,7 @@ class Card {
             </div>
             <div class="card-body">
               <p>${this.nameClient}</p>
-              <p>${this.nameDoctor}</p>
+              <p>${this.doctor}</p>
               <button class="btn btn-edit btn-dark">
                 <span class="text-uppercase text-warning">Edit card</span>
               </button>
@@ -188,10 +187,9 @@ class Card {
               </button>
               
               <div id="c${this.id}" class="collapse">
-                <p class="mt-2">
-                контент карточки, который будет показан при
-                раскрытии.
-                </p>
+                <ul class="mt-2">
+                 <li>${this.briefVisitDescription}</li>
+                </ul>
               </div>
             </div>
           </div>    
@@ -237,13 +235,14 @@ const userPassword = document.querySelector('#user-password');
 const logInModalBtn = document.querySelector('#log-in-btn-modal');
 const createVisitBtn = document.querySelector('#create-visit-btn');
 
-const visitsNoItem = document.querySelector('.visits-no-items');
+/* const visitsNoItem = document.querySelector('.visits-no-items'); */
 
 logInModalBtn.addEventListener('click', () => {
     if(userEmail.value !== '' && userPassword.value !== '') {
         logInDiv.classList.toggle('hidden-element');
         createVisitDiv.classList.toggle('hidden-element');
-        visitsNoItem.classList.toggle('hidden-element');
+/*         visitsNoItem.classList.toggle('hidden-element'); */
+        getCards()
     }
 })
 
