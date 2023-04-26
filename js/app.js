@@ -1,5 +1,5 @@
 
-window.addEventListener('load', getCards);
+//window.addEventListener('load', getCards);
 
 /* CustomHttp */
 function customHttp() {
@@ -81,7 +81,7 @@ async function getCards() {
     console.error(error);
   }
 };
-
+getCards()
 /* Check if cards exist  */
 function checkCardsExist(cards) {
 
@@ -207,3 +207,4 @@ class Card {
     cardsContent.insertAdjacentHTML("afterbegin", fragment);
   }
 };
+
