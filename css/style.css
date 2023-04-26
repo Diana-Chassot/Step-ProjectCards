@@ -1,6 +1,13 @@
-.btn-delete{
+.btn-delete {
   position: absolute;
-  top: 1%;
-  right:1%;
-  
+  top: 0.5%;
+  right:0.5%;
+}
+.btn-close{
+  width: 4px;
+  height: 3px;
+  outline: none;
+}
+.spinner{
+  display: none;
 }
