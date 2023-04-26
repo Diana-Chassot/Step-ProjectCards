@@ -81,7 +81,7 @@ async function getCards() {
     console.error(error);
   }
 };
-getCards()
+
 /* Check if cards exist  */
 function checkCardsExist(cards) {
 
@@ -162,7 +162,7 @@ class Card {
   templateCard() {
 
     const card = `
-      <div class="card-element" style="max-width: 16rem">
+      <div class="card-element mb-3" style="max-width: 16rem">
         <div class="card border-warning shadow text-center col-xl " id="${this.id}">
             <div class="card-header border-warning bg-dark">
                 <h2 class="card-title text-uppercase text-warning">New visit</h2>
@@ -186,12 +186,13 @@ class Card {
                   3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z" />
                 </svg>
               </button>
-            </div>
-            <div id="c${this.id}" class="collapse">
-              <p>
-              контент карточки, который будет показан при
-              раскрытии.
-              </p>
+              
+              <div id="c${this.id}" class="collapse">
+                <p class="mt-2">
+                контент карточки, который будет показан при
+                раскрытии.
+                </p>
+              </div>
             </div>
           </div>    
         </div>

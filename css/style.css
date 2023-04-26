@@ -27,14 +27,14 @@ header {
 }
 .btn-delete {
   position: absolute;
-  top: 0.5%;
-  right:0.5%;
+  top: 1.3%;
+  right:1.3%;
 }
 .btn-close{
   width: 4px;
   height: 3px;
-  outline: none;
 }
+
 .spinner{
   display: none;
 }
