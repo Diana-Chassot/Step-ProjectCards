@@ -210,23 +210,14 @@ class Card {
 };
 
 
-  
+/* модальне вікно для входу */
 const logInModal = document.getElementById('logInModal')
 if (logInModal) {
     logInModal.addEventListener('show.bs.modal', event => {
     // Button that triggered the modal
     const button = event.relatedTarget
-    // Extract info from data-bs-* attributes
-    const recipient = button.getAttribute('data-bs-whatever')
-    // If necessary, you could initiate an Ajax request here
-    // and then do the updating in a callback.
-
-    // Update the modal's content.
-    // const modalBodyInput = logInModal.querySelector('.modal-body input')
-    // modalBodyInput.value = recipient
     })
 }
-
 
 const logInDiv = document.querySelector('#log-in-div');
 const createVisitDiv = document.querySelector('#create-visit-div');
@@ -237,29 +228,54 @@ const userPassword = document.querySelector('#user-password');
 const logInModalBtn = document.querySelector('#log-in-btn-modal');
 const createVisitBtn = document.querySelector('#create-visit-btn');
 
-const visitsNoItem = document.querySelector('.visits-no-items');
-
 logInModalBtn.addEventListener('click', () => {
     if(userEmail.value !== '' && userPassword.value !== '') {
         logInDiv.classList.toggle('hidden-element');
         createVisitDiv.classList.toggle('hidden-element');
-        visitsNoItem.classList.toggle('hidden-element');
+        getCards();
     }
 })
 
 
+/* модальне вікно для створення візиту */
 const createVisitModal = document.getElementById('createVisitModal')
 if (createVisitModal) {
     createVisitModal.addEventListener('show.bs.modal', event => {
     // Button that triggered the modal
     const button = event.relatedTarget
-    // Extract info from data-bs-* attributes
-    const recipient = button.getAttribute('data-bs-whatever')
-    // If necessary, you could initiate an Ajax request here
-    // and then do the updating in a callback.
-
-    // Update the modal's content.
-    // const modalBodyInput = logInModal.querySelector('.modal-body input')
-    // modalBodyInput.value = recipient
     })
+}
+
+
+const chooseDoctorBtn = document.getElementById('select-doctor');
+chooseDoctorBtn.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    showForm();
+})
+
+function showForm() {
+    let formFragment = `
+    <div class="mb-3">
+        <label for="visit-purpose" class="col-form-label">Purpose of the visit:</label>
+        <input type="text" class="form-control" id="visit-purpose">
+    </div>
+    <div class="mb-3">
+        <label for="visit-description" class="col-form-label">Description of the visit:</label>
+        <input type="text" class="form-control" id="visit-description">
+    </div>
+    <div class="mb-3">
+        <label for="urgency">Select an urgency:</label>
+        <select name="urgency" id="urgency" style="padding: 8px;">
+            <option value="ordinary">Ordinary</option>
+            <option value="priority">Priority</option>
+            <option value="urgent">Urgent</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="visit-patient" class="col-form-label">Patient full name:</label>
+        <input type="text" class="form-control" id="visit-patient">
+    </div>`;
+
+    const visitForm = document.getElementById('visit-form');
+    visitForm.insertAdjacentHTML('beforeend', `<form class="visit-form-creation">${formFragment}</form>`);
 }
