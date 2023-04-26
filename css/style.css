@@ -21,10 +21,6 @@ header {
   max-height: 150px;
 }
 
-.visits__start,
-.visits__created {
-  display: none;
-}
 .btn-delete {
   position: absolute;
   top: 1.3%;
@@ -37,4 +33,8 @@ header {
 
 .spinner{
   display: none;
+}
+
+.hidden-element {
+    display: none;
 }

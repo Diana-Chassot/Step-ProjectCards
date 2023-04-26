@@ -19,42 +19,89 @@
 
 <body>
 
-    <!-- header -->
+<!-- header -->
     <header>
         <div class="container">
             <nav class="navbar">
                 <div class="container-fluid w-75">
                     <a href="#">
-                        <img class="logo-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_kkvpVs2FkRiZu1B2JjAjEUNXdQr4fvDiEiCPlZi3bgOf_keRLC8TyYYGTmsyVlYDKTY&usqp=CAU" alt="logo">
+                        <img class="logo-img"
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_kkvpVs2FkRiZu1B2JjAjEUNXdQr4fvDiEiCPlZi3bgOf_keRLC8TyYYGTmsyVlYDKTY&usqp=CAU"
+                            alt="logo">
                     </a>
+                    <div id="log-in-div">
+                        <button type="button" class="btn btn-outline-secondary" id="log-in-btn" data-bs-toggle="modal"
+                            data-bs-target="#logInModal">Sign in</button>
+                    </div>
 
+                    <div id="create-visit-div" class="hidden-element">
+                        <button type="button" class="btn btn-success" id="create-visit-btn" data-bs-toggle="modal"
+                            data-bs-target="#createVisitModal">Create visit</button>
+                    </div>
 
-                    <button type="button" class="btn btn-outline-secondary">Log in</button>
                 </div>
             </nav>
         </div>
-        <hr>
     </header>
-    
+    <hr>
+    <!-- Modal form for log in -->
+    <div class="modal fade" id="logInModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+        style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <!-- <label for="recipient-name" class="col-form-label">Login:</label> -->
+                            <label for="user-email" class="col-form-label">Email:</label>
+                            <input type="email" class="form-control" id="user-email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="user-password" class="col-form-label">Password:</label>
+                            <input type="password" class="form-control" id="user-password">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="log-in-btn-modal">Sign
+                        in</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal form for creating visit -->
+    <div class="modal fade" id="createVisitModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+        style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <!-- dropdown - doctor select -->
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Choose a doctor
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><button class="dropdown-item" type="button" id="btn-therapist">Therapist</button></li>
+                            <li><button class="dropdown-item" type="button" id="btn-cardiologist">Cardiologist</button>
+                            </li>
+                            <li><button class="dropdown-item" type="button" id="btn-dentist">Dentist</button></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <main>
         <div class="container">
             <!-- form for filtering visits -->
             <form action="">
-
             </form>
-
             <!-- list of created visits -->
-            <div class="visits">
-                <div class="visits__start text-center">
-                    <p>No items have been added</p>
-                </div>
-                <div class="visits__created col-4">
-
-                </div>
-
-            </div>
+            
         </div>
-        
+        <!-- list of created visits -->
     </main>
     <section class="cards">
         <div class="container-fluid">
@@ -73,7 +120,6 @@
             </div>
         </div>
     </section>
-
 
 
     <!-- main js -->
