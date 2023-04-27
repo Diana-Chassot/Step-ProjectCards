@@ -1,6 +1,4 @@
 
-//window.addEventListener('load', getCards);
-
 /* CustomHttp */
 function customHttp() {
 
@@ -18,14 +16,12 @@ function checkStatusResponse(response) {
     throw new Error('Error');
   }
 };
-
 /*Post Cards*/
 async function postCards() {
 
   try {
     showSpinner()
     const { API_TOKEN, API_URL } = customHttp();
-
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
@@ -34,24 +30,28 @@ async function postCards() {
       },
       body: JSON.stringify({
         nameClient: "ExapmleName",
-        doctor: "DoctorExample",
+        doctor: "Dentist",
         briefVisitDescr: "here will be data",
-        urgency: "here will be data"
-        /* какие еще данные нужны? */
+        urgency: "here will be data",
+        bodyMassIndex: undefined,
+        age: 55,
+        bloodPressure: undefined,
+        pastDiseasesCardiovascularSystem: undefined,
+        dateOfLastVisit: undefined
       })
     });
 
     const card = await checkStatusResponse(response);
     checkCardsExist(card);
 
-    const newCard = new Card(card);
-
+    const newCard = filterCardByDoctor(card);
     newCard.renderCard();
     hideSpinner()
   } catch (error) {
     console.error(error);
   }
 };
+
 /*Get Cards */
 async function getCards() {
 
@@ -67,19 +67,35 @@ async function getCards() {
       },
     });
     const cards = await checkStatusResponse(response);
-
+    console.log(cards)
     checkCardsExist(cards);
     cards.forEach(card => {
 
-      const newCard = new Card(card);
+      const newCard = filterCardByDoctor(card);
       newCard.renderCard();
-
+      console.log(newCard)
     });
     hideSpinner()
   } catch (error) {
     console.error(error);
   }
 };
+/* Check and filter type of card */
+function filterCardByDoctor(cardData) {
+  if (cardData.doctor === "Dentist") {
+    return new DentistCard(cardData);
+  }
+  else if (cardData.doctor === "Cardiolog") {
+    return new CardiologistCard(cardData);
+  }
+  else if (cardData.doctor === "Therapist") {
+    return new TherapistCard(cardData)
+  }
+  else{ 
+    return new Card(cardData)
+  }
+  
+}
 
 /* Check if cards exist  */
 function checkCardsExist(cards) {
@@ -90,6 +106,7 @@ function checkCardsExist(cards) {
     deleteNoItemsMessage()
   }
 };
+
 /* Add Message "no item has been added" */
 function addNoItemsMessage() {
 
@@ -99,6 +116,7 @@ function addNoItemsMessage() {
   `;
   cardsContent.insertAdjacentHTML("afterbegin", message)
 };
+
 /* Delete Message "no item has been added" */
 function deleteNoItemsMessage() {
 
@@ -107,25 +125,30 @@ function deleteNoItemsMessage() {
     noItemsMessage.remove();
   }
 };
+
 /* Show Spinner */
 function showSpinner() {
   const spinner = document.querySelector(".spinner");
   spinner.style.display = "block";
 };
+
 /* Hide Spinner */
 function hideSpinner() {
   const spinner = document.querySelector(".spinner");
   spinner.style.display = "none";
 };
+
 /* Card class and methodes delete, edit, render  */
 class Card {
 
-  constructor({ nameClient, doc, briefVisitDescr, urgency, id /* больше данных */ }) {
-    this.nameClient = nameClient;
-    this.doctor = doc;
-    this.briefVisitDescription = briefVisitDescr;
-    this.urgency = urgency;
+  constructor({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr }) {
+
     this.id = id;
+    this.nameClient = nameClient;
+    this.doctor = doctor;
+    this.urgency = urgency;
+    this.purposeVisit = purposeOfTheVisit,
+    this.visitDescr = briefVisitDescr;
   }
   /* delete card */
   async deleteCard() {
@@ -161,7 +184,7 @@ class Card {
   templateCard() {
 
     const card = `
-      <div class="card-element mb-3" style="max-width: 16rem">
+      <div class="card-element mb-3" style="max-width: 25rem">
         <div class="card border-warning shadow text-center col-xl " id="${this.id}">
             <div class="card-header border-warning bg-dark">
                 <h2 class="card-title text-uppercase text-warning">New visit</h2>
@@ -187,8 +210,19 @@ class Card {
               </button>
               
               <div id="c${this.id}" class="collapse">
-                <ul class="mt-2">
-                 <li>${this.briefVisitDescription}</li>
+                <ul class="mt-2 text-start">
+                  <li class="text-warning">
+                    <span class="fw-semibold">Urgency:</span>
+                    ${this.urgency}
+                  </li>
+                  <li>
+                    <span class="fw-semibold">Purpose of the Visit:</span>
+                    ${this.purposeVisit}
+                  </li>
+                  <li>
+                    <span class="fw-semibold">Visit Description:</span>
+                    ${this.visitDescr}
+                  </li>
                 </ul>
               </div>
             </div>
@@ -197,6 +231,7 @@ class Card {
       `
     return card;
   };
+
   /* добавление карточки в разметку */
   renderCard() {
     const cardsContent = document.querySelector(".cards-content");
@@ -207,11 +242,37 @@ class Card {
   }
 };
 
-
+class DentistCard extends Card {
   
+  constructor({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr, dateOfLastVisit }) {
+    super({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr })
+    this.dateOfLastVisit = dateOfLastVisit;
+  }
+};
+
+class CardiologistCard extends Card {
+  
+  constructor({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr, bodyMassIndex, bloodPressure, pDCSystem, age }) {
+    super({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr })
+    this.bodyMassIndex = bodyMassIndex;
+    this.bloodPressure = bloodPressure;
+    this.pDCSystem = pDCSystem;
+    this.age = age;
+  }
+};
+class TherapistCard extends Card {
+  
+  constructor({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr, age }) {
+    super({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr })
+    this.age = age;
+  }
+};
+
+
+
 const logInModal = document.getElementById('logInModal')
 if (logInModal) {
-    logInModal.addEventListener('show.bs.modal', event => {
+  logInModal.addEventListener('show.bs.modal', event => {
     // Button that triggered the modal
     const button = event.relatedTarget
     // Extract info from data-bs-* attributes
@@ -222,7 +283,7 @@ if (logInModal) {
     // Update the modal's content.
     // const modalBodyInput = logInModal.querySelector('.modal-body input')
     // modalBodyInput.value = recipient
-    })
+  })
 }
 
 
@@ -238,18 +299,18 @@ const createVisitBtn = document.querySelector('#create-visit-btn');
 /* const visitsNoItem = document.querySelector('.visits-no-items'); */
 
 logInModalBtn.addEventListener('click', () => {
-    if(userEmail.value !== '' && userPassword.value !== '') {
-        logInDiv.classList.toggle('hidden-element');
-        createVisitDiv.classList.toggle('hidden-element');
-/*         visitsNoItem.classList.toggle('hidden-element'); */
-        getCards()
-    }
+  if (userEmail.value !== '' && userPassword.value !== '') {
+    logInDiv.classList.toggle('hidden-element');
+    createVisitDiv.classList.toggle('hidden-element');
+    /*         visitsNoItem.classList.toggle('hidden-element'); */
+    getCards()
+  }
 })
 
 
 const createVisitModal = document.getElementById('createVisitModal')
 if (createVisitModal) {
-    createVisitModal.addEventListener('show.bs.modal', event => {
+  createVisitModal.addEventListener('show.bs.modal', event => {
     // Button that triggered the modal
     const button = event.relatedTarget
     // Extract info from data-bs-* attributes
@@ -260,5 +321,5 @@ if (createVisitModal) {
     // Update the modal's content.
     // const modalBodyInput = logInModal.querySelector('.modal-body input')
     // modalBodyInput.value = recipient
-    })
+  })
 }
