@@ -38,3 +38,10 @@ header {
 .hidden-element {
     display: none;
 }
+.card-details li span{
+  font-weight: 600;
+
+}
+.card-details li{
+  margin-top: 8px;
+}

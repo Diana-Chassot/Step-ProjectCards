@@ -30,7 +30,7 @@ async function postCards() {
       },
       body: JSON.stringify({
         nameClient: "ExapmleName",
-        doctor: "Dentist",
+        doctor: "Cardiologist",
         briefVisitDescr: "here will be data",
         urgency: "here will be data",
         bodyMassIndex: undefined,
@@ -45,7 +45,10 @@ async function postCards() {
     checkCardsExist(card);
 
     const newCard = filterCardByDoctor(card);
+
     newCard.renderCard();
+    newCard.renderSpecialDetails()
+
     hideSpinner()
   } catch (error) {
     console.error(error);
@@ -67,14 +70,16 @@ async function getCards() {
       },
     });
     const cards = await checkStatusResponse(response);
-    console.log(cards)
+
     checkCardsExist(cards);
     cards.forEach(card => {
 
       const newCard = filterCardByDoctor(card);
       newCard.renderCard();
-      console.log(newCard)
+      newCard.renderSpecialDetails();
+
     });
+
     hideSpinner()
   } catch (error) {
     console.error(error);
@@ -85,16 +90,16 @@ function filterCardByDoctor(cardData) {
   if (cardData.doctor === "Dentist") {
     return new DentistCard(cardData);
   }
-  else if (cardData.doctor === "Cardiolog") {
+  else if (cardData.doctor === "Cardiologist") {
     return new CardiologistCard(cardData);
   }
   else if (cardData.doctor === "Therapist") {
     return new TherapistCard(cardData)
   }
-  else{ 
+  else {
     return new Card(cardData)
   }
-  
+
 }
 
 /* Check if cards exist  */
@@ -128,12 +133,14 @@ function deleteNoItemsMessage() {
 
 /* Show Spinner */
 function showSpinner() {
+
   const spinner = document.querySelector(".spinner");
   spinner.style.display = "block";
 };
 
 /* Hide Spinner */
 function hideSpinner() {
+
   const spinner = document.querySelector(".spinner");
   spinner.style.display = "none";
 };
@@ -148,7 +155,7 @@ class Card {
     this.doctor = doctor;
     this.urgency = urgency;
     this.purposeVisit = purposeOfTheVisit,
-    this.visitDescr = briefVisitDescr;
+      this.visitDescr = briefVisitDescr;
   }
   /* delete card */
   async deleteCard() {
@@ -186,52 +193,55 @@ class Card {
     const card = `
       <div class="card-element mb-3" style="max-width: 25rem">
         <div class="card border-warning shadow text-center col-xl " id="${this.id}">
-            <div class="card-header border-warning bg-dark">
-                <h2 class="card-title text-uppercase text-warning">New visit</h2>
-                <button type="button" class="btn-delete btn-close btn-close-white"></button>
-            </div>
-            <div class="card-body">
-              <p>${this.nameClient}</p>
-              <p>${this.doctor}</p>
-              <button class="btn btn-edit btn-dark">
-                <span class="text-uppercase text-warning">Edit card</span>
-              </button>
-              <button class="btn btn-warning" type="button" data-bs-toggle="collapse"
+          <div class="card-header border-warning bg-dark">
+              <h2 class="card-title text-uppercase text-warning">New visit</h2>
+              <button type="button" class="btn-delete btn-close btn-close-white"></button>
+          </div>
+          <div class="card-body">
+            <p class="text-uppercase">${this.nameClient}</p>
+            <p class="text-uppercase">${this.doctor}</p>
+            <button class="btn btn-edit btn-dark">
+              <span class="text-uppercase text-warning">Edit card</span>
+            </button>
+            <button class="btn btn-warning" type="button" data-bs-toggle="collapse"
                 data-bs-target="#c${this.id}" aria-controls="c${this.id}">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
                 fill="currentColor"class="bi-arrow-down-square" 
                 viewBox="0 0 16 16">
-                  <path fill-rule="evenodd"
-                  d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 
-                  2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 2.5a.5.5 0 0 0-1 
-                  0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 
-                  3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z" />
-                </svg>
-              </button>
+                <path fill-rule="evenodd"
+                d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 
+                2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 2.5a.5.5 0 0 0-1 
+                0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 
+                3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z" />
+              </svg>
+            </button>
               
-              <div id="c${this.id}" class="collapse">
-                <ul class="mt-2 text-start">
-                  <li class="text-warning">
-                    <span class="fw-semibold">Urgency:</span>
-                    ${this.urgency}
-                  </li>
-                  <li>
-                    <span class="fw-semibold">Purpose of the Visit:</span>
-                    ${this.purposeVisit}
-                  </li>
-                  <li>
-                    <span class="fw-semibold">Visit Description:</span>
-                    ${this.visitDescr}
-                  </li>
-                </ul>
-              </div>
+            <div id="c${this.id}" class="collapse">
+              <ul class="card-details mt-2 text-start">
+                <li>
+                  <span class="text-warning">Urgency:</span>
+                  ${this.urgency}
+                </li>
+                <li>
+                  <span>Purpose of the Visit:</span>
+                  ${this.purposeVisit}
+                </li>
+                <li>
+                  <span>Visit Description:</span>
+                  ${this.visitDescr}
+                </li>
+              </ul>
             </div>
-          </div>    
-        </div>
-      `
+          </div>
+        </div>    
+      </div>
+    `
     return card;
   };
-
+  /* удалить после когда все картчоки на сервере будут с определнными докторами */
+  renderSpecialDetails() {
+    console.log("Delete this.method when all cards will be with DEFIND DOCTOR");
+  }
   /* добавление карточки в разметку */
   renderCard() {
     const cardsContent = document.querySelector(".cards-content");
@@ -241,34 +251,72 @@ class Card {
     cardsContent.insertAdjacentHTML("afterbegin", fragment);
   }
 };
+class TherapistCard extends Card {
 
-class DentistCard extends Card {
-  
-  constructor({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr, dateOfLastVisit }) {
+  constructor({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr, age }) {
     super({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr })
-    this.dateOfLastVisit = dateOfLastVisit;
+    this.age = age;
+  };
+  /* render details depends of doctor */
+  renderSpecialDetails() {
+
+    const detailsElements = [
+      { text: "Age: ", value: this.age },
+    ];
+    addSpecialDetails(detailsElements);
   }
 };
 
 class CardiologistCard extends Card {
-  
+
   constructor({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr, bodyMassIndex, bloodPressure, pDCSystem, age }) {
     super({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr })
     this.bodyMassIndex = bodyMassIndex;
     this.bloodPressure = bloodPressure;
     this.pDCSystem = pDCSystem;
     this.age = age;
+  };
+  /* render details depends of doctor */
+  renderSpecialDetails() {
+
+    const detailsElements = [
+      { text: "Age: ", value: this.age },
+      { text: "Body Mass Index: ", value: this.bodyMassIndex },
+      { text: "Blood Pressure ", value: this.bloodPressure },
+      { text: "Cardiovascular system ", value: this.pDCSystem }
+    ];
+    addSpecialDetails(detailsElements);
   }
 };
-class TherapistCard extends Card {
-  
-  constructor({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr, age }) {
+
+class DentistCard extends Card {
+
+  constructor({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr, dateOfLastVisit }) {
     super({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr })
-    this.age = age;
+    this.dateOfLastVisit = dateOfLastVisit;
+  };
+
+  /* render details depends of doctor */
+  renderSpecialDetails() {
+
+    const detailsElements = [
+      { text: "Date of last visit: ", value: this.dateOfLastVisit },
+    ];
+    addSpecialDetails(detailsElements);
   }
 };
+/* Add Speciall Details */
+function addSpecialDetails(detailsElements) {
+  
+  const cardDetails = document.querySelector(".card-details");
 
-
+  detailsElements.forEach((element) => {
+    const template = `
+    <li><span>${element.text}</span>${element.value}</li>
+    `
+    cardDetails.insertAdjacentHTML("beforeend", template)
+  });
+}
 
 const logInModal = document.getElementById('logInModal')
 if (logInModal) {
