@@ -211,7 +211,7 @@ class Card {
 
 
 /* модальне вікно для входу */
-const logInModal = document.getElementById('logInModal')
+const logInModal = document.getElementById('logInModal');
 if (logInModal) {
     logInModal.addEventListener('show.bs.modal', event => {
     // Button that triggered the modal
@@ -236,7 +236,6 @@ logInModalBtn.addEventListener('click', () => {
     }
 })
 
-
 /* модальне вікно для створення візиту */
 const createVisitModal = document.getElementById('createVisitModal')
 if (createVisitModal) {
@@ -246,36 +245,108 @@ if (createVisitModal) {
     })
 }
 
+/* форма для створення візиту */
+const selectDoctorBtn = document.getElementById('select-doctor-btn');
+const visitForm = document.getElementById('visit-form');
+const visitAddInfo = document.querySelector('.visit-add-info');
 
-const chooseDoctorBtn = document.getElementById('select-doctor');
-chooseDoctorBtn.addEventListener('click', (ev) => {
+selectDoctorBtn.addEventListener('click', (ev) => {
     ev.preventDefault();
     showForm();
+    selectDoctorBtn.classList.add('disabled');
 })
 
+const doctorSelect = document.getElementById('doctor');
 function showForm() {
-    let formFragment = `
-    <div class="mb-3">
-        <label for="visit-purpose" class="col-form-label">Purpose of the visit:</label>
-        <input type="text" class="form-control" id="visit-purpose">
-    </div>
-    <div class="mb-3">
-        <label for="visit-description" class="col-form-label">Description of the visit:</label>
-        <input type="text" class="form-control" id="visit-description">
-    </div>
-    <div class="mb-3">
-        <label for="urgency">Select an urgency:</label>
-        <select name="urgency" id="urgency" style="padding: 8px;">
-            <option value="ordinary">Ordinary</option>
-            <option value="priority">Priority</option>
-            <option value="urgent">Urgent</option>
-        </select>
-    </div>
-    <div class="mb-3">
-        <label for="visit-patient" class="col-form-label">Patient full name:</label>
-        <input type="text" class="form-control" id="visit-patient">
-    </div>`;
+    let formAddFields = '';
+    let doctor = doctorSelect.value;
 
-    const visitForm = document.getElementById('visit-form');
-    visitForm.insertAdjacentHTML('beforeend', `<form class="visit-form-creation">${formFragment}</form>`);
+    if (doctor === 'therapist') {
+        formAddFields = `
+            <div class="mb-3">
+                <label for="visit-age" class="col-form-label">Patient age:</label>
+                <input type="text" class="form-control" id="visit-age">
+            </div>
+        `
+    }
+
+    if (doctor === 'dentist') {
+        formAddFields = `
+            <div class="mb-3">
+                <label for="visit-last" class="col-form-label">Last visit:</label>
+                <input type="date" class="form-control" id="visit-last">
+            </div>
+        `
+    }
+
+    if (doctor === 'cardiologist') {
+        formAddFields = `
+            <div class="mb-3">
+                <label for="visit-normal-pressure" class="col-form-label">Normal pressure:</label>
+                <input type="text" class="form-control" id="visit-normal-pressure">
+            </div>
+            <div class="mb-3">
+                <label for="visit-BMI" class="col-form-label">Body mass index:</label>
+                <input type="text" class="form-control" id="visit-BMI">
+            </div>
+            <div class="mb-3">
+                <label for="visit-heart-diseases" class="col-form-label">Past diseases of the cardiovascular system:</label>
+                <input type="text" class="form-control" id="visit-heart-diseases">
+            </div>
+            <div class="mb-3">
+                <label for="visit-age" class="col-form-label">Patient age:</label>
+                <input type="text" class="form-control" id="visit-age">
+            </div>
+        `
+    }
+
+    visitAddInfo.insertAdjacentHTML('afterbegin', formAddFields);
+    visitForm.classList.remove('hidden-element')
+}
+
+/* зміна полів форми для створення візиту */
+doctorSelect.addEventListener('change', () => {
+    hideForm();
+    deleteAddInfo();
+    selectDoctorBtn.classList.remove('disabled');
+})
+
+/* підтвердження створення візиту*/
+const createVisitConfirmBtn = document.getElementById('create-visit-confirm');
+createVisitConfirmBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    postCards();
+})
+
+/* скасування створення візиту*/
+const createVisitCancelBtn = document.getElementById('create-visit-cancel');
+createVisitCancelBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    hideForm();
+    clearVisitFormFields();
+    deleteAddInfo();
+    selectDoctorBtn.classList.remove('disabled');
+})
+
+function clearVisitFormFields() {
+    const visitModalFields = visitForm.querySelectorAll('input');
+
+    visitModalFields.forEach( field => { 
+        field.value = ''
+    });
+
+    doctorSelect.value = 'therapist';
+
+    const visitUrgencySelect = document.getElementById('urgency');
+    visitUrgencySelect.value = 'ordinary';
+}
+
+function deleteAddInfo() {
+    Array.from(visitAddInfo.children).forEach(child => {
+        child.remove();
+    })
+}
+
+function hideForm() {
+    visitForm.classList.add('hidden-element')
 }

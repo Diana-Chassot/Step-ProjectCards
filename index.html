@@ -30,13 +30,11 @@
                             alt="logo">
                     </a>
                     <div id="log-in-div">
-                        <button type="button" class="btn btn-outline-secondary" id="log-in-btn" data-bs-toggle="modal"
-                            data-bs-target="#logInModal">Sign in</button>
+                        <button type="button" class="btn btn-outline-secondary" id="log-in-btn" data-bs-toggle="modal" data-bs-target="#logInModal">Sign in</button>
                     </div>
 
                     <div id="create-visit-div" class="hidden-element">
-                        <button type="button" class="btn btn-warning" id="create-visit-btn" data-bs-toggle="modal"
-                            data-bs-target="#createVisitModal">Create visit</button>
+                        <button type="button" class="btn btn-warning" id="create-visit-btn" data-bs-toggle="modal" data-bs-target="#createVisitModal">Create visit</button>
                     </div>
 
                 </div>
@@ -45,8 +43,7 @@
     </header>
     <hr>
     <!-- Modal form for log in -->
-    <div class="modal fade" id="logInModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
-        style="display: none;">
+    <div class="modal fade" id="logInModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
@@ -63,16 +60,14 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="log-in-btn-modal">Sign
-                        in</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="log-in-btn-modal">Sign in</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Modal form for creating visit -->
-    <div class="modal fade" id="createVisitModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
-        style="display: none;">
+    <div class="modal fade" id="createVisitModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
@@ -90,17 +85,43 @@
                         </ul>
                     </div> -->
                     <form id="doctor-selection">
-                        <label for="doctor">Choose a doctor:</label>
+                        <label for="doctor">Select a doctor:</label>
                         <select name="doctor" id="doctor" style="padding: 8px;">
                             <option value="therapist">Therapist</option>
                             <option value="cardiologist">Cardiologist</option>
                             <option value="dentist">Dentist</option>
                         </select>
-                        <button class="btn btn-warning" type="submit" id="select-doctor">Choose</button>
+                        <button class="btn btn-warning" type="submit" id="select-doctor-btn">Choose</button>
 
                         <!-- form for filling in for visit -->
-                        <div id="visit-form">
-                            
+                        <div id="visit-form" class="hidden-element">
+                            <div class="mb-3">
+                                <label for="visit-purpose" class="col-form-label">Purpose of the visit:</label>
+                                <input type="text" class="form-control" id="visit-purpose">
+                            </div>
+                            <div class="mb-3">
+                                <label for="visit-description" class="col-form-label">Description of the visit:</label>
+                                <input type="text" class="form-control" id="visit-description">
+                            </div>
+                            <div class="mb-3">
+                                <label for="urgency">Select an urgency:</label>
+                                <select name="urgency" id="urgency" style="padding: 8px;">
+                                    <option value="ordinary">Ordinary</option>
+                                    <option value="priority">Priority</option>
+                                    <option value="urgent">Urgent</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="visit-patient" class="col-form-label">Patient full name:</label>
+                                <input type="text" class="form-control" id="visit-patient">
+                            </div>
+
+                            <div class="visit-add-info"></div>
+
+                            <div class="visit-form-btns">
+                                <button class="btn btn-warning" type="submit" id="create-visit-confirm" data-bs-dismiss="modal">Create</button>
+                                <button class="btn btn-secondary" type="submit" id="create-visit-cancel" data-bs-dismiss="modal">Close</button>
+                            </div>
                         </div>
 
                     </form>
