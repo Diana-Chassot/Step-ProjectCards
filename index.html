@@ -19,10 +19,143 @@
 
 <body>
 
+<!-- header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="container-fluid w-75">
+                    <a href="#">
+                        <img class="logo-img"
+                            src="data:image/png;base64,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"
+                            alt="logo">
+                    </a>
+                    <div id="log-in-div">
+                        <button type="button" class="btn btn-outline-secondary" id="log-in-btn" data-bs-toggle="modal" data-bs-target="#logInModal">Sign in</button>
+                    </div>
 
+                    <div id="create-visit-div" class="hidden-element">
+                        <button type="button" class="btn btn-warning" id="create-visit-btn" data-bs-toggle="modal" data-bs-target="#createVisitModal">Create visit</button>
+                    </div>
 
+                </div>
+            </nav>
+        </div>
+    </header>
+    <hr>
+    <!-- Modal form for log in -->
+    <div class="modal fade" id="logInModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <!-- <label for="recipient-name" class="col-form-label">Login:</label> -->
+                            <label for="user-email" class="col-form-label">Email:</label>
+                            <input type="email" class="form-control" id="user-email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="user-password" class="col-form-label">Password:</label>
+                            <input type="password" class="form-control" id="user-password">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="log-in-btn-modal">Sign in</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Modal form for creating visit -->
+    <div class="modal fade" id="createVisitModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <!-- dropdown - doctor select -->
+                    <!-- <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Choose a doctor
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><button class="dropdown-item" type="button" id="btn-therapist">Therapist</button></li>
+                            <li><button class="dropdown-item" type="button" id="btn-cardiologist">Cardiologist</button>
+                            </li>
+                            <li><button class="dropdown-item" type="button" id="btn-dentist">Dentist</button></li>
+                        </ul>
+                    </div> -->
+                    <form id="doctor-selection">
+                        <label for="doctor">Select a doctor:</label>
+                        <select name="doctor" id="doctor" style="padding: 8px;">
+                            <option value="therapist">Therapist</option>
+                            <option value="cardiologist">Cardiologist</option>
+                            <option value="dentist">Dentist</option>
+                        </select>
+                        <button class="btn btn-warning" type="submit" id="select-doctor-btn">Select</button>
 
+                        <!-- form for filling in for visit -->
+                        <div id="visit-form" class="hidden-element">
+                            <div class="mb-3">
+                                <label for="visit-purpose" class="col-form-label">Purpose of the visit:</label>
+                                <input type="text" class="form-control" id="visit-purpose">
+                            </div>
+                            <div class="mb-3">
+                                <label for="visit-description" class="col-form-label">Description of the visit:</label>
+                                <input type="text" class="form-control" id="visit-description">
+                            </div>
+                            <div class="mb-3">
+                                <label for="urgency">Select an urgency:</label>
+                                <select name="urgency" id="urgency" style="padding: 8px;">
+                                    <option value="ordinary">Ordinary</option>
+                                    <option value="priority">Priority</option>
+                                    <option value="urgent">Urgent</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="visit-patient" class="col-form-label">Patient full name:</label>
+                                <input type="text" class="form-control" id="visit-patient">
+                            </div>
+
+                            <div class="visit-add-info"></div>
+
+                            <div class="visit-form-btns">
+                                <button class="btn btn-warning" type="submit" id="create-visit-confirm" data-bs-dismiss="modal">Create</button>
+                                <button class="btn btn-secondary" type="submit" id="create-visit-cancel" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <main>
+        <div class="container">
+            <!-- form for filtering visits -->
+            <form action="">
+            </form>
+            <!-- list of created visits -->
+            
+        </div>
+        <!-- list of created visits -->
+    </main>
+    <section class="cards">
+        <div class="container-fluid">
+            <div class="cards-content row text-center justify-content-center">
+                <div class="spinner row justify-content-center">
+                    <div class="spinner-grow text-dark">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div class="spinner-grow text-warning">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div class="spinner-grow text-success">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
 
     <!-- main js -->
@@ -30,9 +163,8 @@
     <!-- bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-        </script>
+    </script>
 </body>
-
 
 
 </html>
