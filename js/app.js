@@ -316,41 +316,87 @@ function addSpecialDetails(detailsElements) {
   });
 }
 
-const logInModal = document.getElementById('logInModal')
-if (logInModal) {
-  logInModal.addEventListener('show.bs.modal', event => {
-    // Button that triggered the modal
-    const button = event.relatedTarget
-    })
+/* модальні вікна */
+class Modal {
+    constructor(id, btnId, text) {
+        this.id = id;
+        this.btnId = btnId;
+        this.text = text;
+    };
+
+    getModalContent() {
+        const modalContent = document.getElementById(`${this.id}`);
+        return modalContent;
+    }
+
+    getModalInputs() {
+        const modalInputs = Array.from(document.getElementById(`${this.id}`).getElementsByTagName('input'));
+        return modalInputs;
+    }
+
+    getModalConfirmBtn() {
+        const modalConfirmBtn = document.getElementById(`${this.id}`).querySelector(`#${this.btnId}`);
+        return modalConfirmBtn;
+    }
+    
+    checkInputs(modalInputs, modalConfirmBtn) {
+        let res = true;
+        modalInputs.forEach(input => {
+            if(input.value == '') {
+                res = false;
+                modalConfirmBtn.removeAttribute('data-bs-dismiss', 'modal');
+                input.style.borderColor = 'red';
+            }
+        })
+        return res;
+    }
+
+    listenToInputs(modalContent, modalInputs, modalConfirmBtn) {
+        modalInputs.forEach(input => {
+            input.addEventListener('input', () => {
+                input.style.borderColor = '';
+                modalContent.querySelector('.warning') ? modalContent.querySelector('.warning').remove() : '';                
+                modalConfirmBtn.setAttribute('data-bs-dismiss', 'modal');
+                this.checkInputs(modalInputs, modalConfirmBtn);
+            })
+        })
+    }
+
+    addWarning() {
+        this.getModalContent().querySelector('.warning') ? '' : this.getModalConfirmBtn().insertAdjacentHTML('beforebegin', `<p class='warning' style='color: red'>${this.text}</p>`);
+    }
+
 }
+
+/* вхід */
+const logIn = new Modal('logInModal', 'log-in-btn-modal', 'Please enter your email and password to sign in!');
+const logInModal = logIn.getModalContent();
+const logInModalInputs = logIn.getModalInputs();
+const logInModalBtn = logIn.getModalConfirmBtn();
 
 const logInDiv = document.querySelector('#log-in-div');
 const createVisitDiv = document.querySelector('#create-visit-div');
 
-const userEmail = document.querySelector('#user-email');
-const userPassword = document.querySelector('#user-password');
-
-const logInModalBtn = document.querySelector('#log-in-btn-modal');
-const createVisitBtn = document.querySelector('#create-visit-btn');
-
-logInModalBtn.addEventListener('click', () => {
-    if(userEmail.value !== '' && userPassword.value !== '') {
+logIn.listenToInputs(logInModal, logInModalInputs, logInModalBtn);
+logInModalBtn.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    if(logIn.checkInputs(logInModalInputs, logInModalBtn)) {
         logInDiv.classList.toggle('hidden-element');
         createVisitDiv.classList.toggle('hidden-element');
-        getCards();
+
+        getCards();        
+    } else {
+        logIn.addWarning();
     }
 })
 
-/* модальне вікно для створення візиту */
-const createVisitModal = document.getElementById('createVisitModal')
-if (createVisitModal) {
-    createVisitModal.addEventListener('show.bs.modal', event => {
-    // Button that triggered the modal
-    const button = event.relatedTarget
-    })
-}
-
 /* форма для створення візиту */
+const createVisit = new Modal('createVisitModal', 'create-visit-confirm', 'All mandatory fields must be filled!');
+const createVisitModal = createVisit.getModalContent();
+const createVisitInputs = createVisit.getModalInputs();
+const createVisitConfirmBtn = createVisit.getModalConfirmBtn();
+
+const doctorSelect = document.getElementById('doctor');
 const selectDoctorBtn = document.getElementById('select-doctor-btn');
 const visitForm = document.getElementById('visit-form');
 const visitAddInfo = document.querySelector('.visit-add-info');
@@ -361,7 +407,6 @@ selectDoctorBtn.addEventListener('click', (ev) => {
     selectDoctorBtn.classList.add('disabled');
 })
 
-const doctorSelect = document.getElementById('doctor');
 function showForm() {
     let formAddFields = '';
     let doctor = doctorSelect.value;
@@ -411,47 +456,80 @@ function showForm() {
 
 /* зміна полів форми для створення візиту */
 doctorSelect.addEventListener('change', () => {
-    hideForm();
-    deleteAddInfo();
-    selectDoctorBtn.classList.remove('disabled');
+    clearForm();
+
+    const urgencySelect = document.getElementById('urgency');
+    urgencySelect.value = urgencySelect.children[0].value;
 })
 
 /* підтвердження створення візиту*/
-const createVisitConfirmBtn = document.getElementById('create-visit-confirm');
+createVisit.listenToInputs(createVisitModal, createVisitInputs, createVisitConfirmBtn);
+
 createVisitConfirmBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    postCards();
+    if(createVisit.checkInputs(createVisitInputs, createVisitConfirmBtn)) {
+        postCards();
+
+        clearForm();
+        clearSelectFields();
+        createVisitConfirmBtn.removeAttribute('data-bs-dismiss', 'modal');
+    } else {
+        createVisit.addWarning();
+    }
 })
 
 /* скасування створення візиту*/
 const createVisitCancelBtn = document.getElementById('create-visit-cancel');
 createVisitCancelBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    hideForm();
-    clearVisitFormFields();
-    deleteAddInfo();
-    selectDoctorBtn.classList.remove('disabled');
+
+    clearForm();
+    clearSelectFields();
 })
 
-function clearVisitFormFields() {
-    const visitModalFields = visitForm.querySelectorAll('input');
-
-    visitModalFields.forEach( field => { 
-        field.value = ''
-    });
-
-    doctorSelect.value = 'therapist';
-
-    const visitUrgencySelect = document.getElementById('urgency');
-    visitUrgencySelect.value = 'ordinary';
-}
-
-function deleteAddInfo() {
-    Array.from(visitAddInfo.children).forEach(child => {
-        child.remove();
-    })
+/* очистка форми і всіх полів */
+function clearForm() {
+    hideForm();
+    deleteAddInfo();
+    deleteWarning();
+    clearInputFields();
+    selectDoctorBtn.classList.remove('disabled');
 }
 
 function hideForm() {
     visitForm.classList.add('hidden-element')
 }
+
+function clearInputFields() {
+    const inputModalFields = document.querySelectorAll('input');
+    inputModalFields.forEach( field => { 
+        field.value = '';
+        field.style.borderColor = '';
+    });
+}
+
+function clearSelectFields() {
+    const selectModalFields = document.querySelectorAll('select');
+    Array.from(selectModalFields).forEach(field => {
+        field.value = field.children[0].value;
+    })
+}
+
+function deleteAddInfo() {
+    Array.from(visitAddInfo.children).forEach(child => {
+        child.remove();
+    });
+    createVisitModal.querySelector('.warning') ? createVisitModal.querySelector('.warning').remove() : '';
+
+}
+
+function deleteWarning() {
+    document.querySelector('.warning') ? document.querySelector('.warning').remove() : '';
+}
+
+document.addEventListener('click', (ev) => {
+    if(ev.target.classList.contains('modal')) {
+        clearForm();
+        clearSelectFields();
+    }
+})

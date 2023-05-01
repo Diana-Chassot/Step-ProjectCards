@@ -30,7 +30,7 @@
                             alt="logo">
                     </a>
                     <div id="log-in-div">
-                        <button type="button" class="btn btn-outline-secondary" id="log-in-btn" data-bs-toggle="modal" data-bs-target="#logInModal">Sign in</button>
+                        <button type="button" class="btn btn-outline-dark" id="log-in-btn" data-bs-toggle="modal" data-bs-target="#logInModal">Sign in</button>
                     </div>
 
                     <div id="create-visit-div" class="hidden-element">
@@ -43,11 +43,11 @@
     </header>
     <hr>
     <!-- Modal form for log in -->
-    <div class="modal fade" id="logInModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal fade" id="logInModal" tabindex="-1" aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    <form>
+                    <form id="log-in-form">
                         <div class="mb-3">
                             <!-- <label for="recipient-name" class="col-form-label">Login:</label> -->
                             <label for="user-email" class="col-form-label">Email:</label>
@@ -60,7 +60,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="log-in-btn-modal">Sign in</button>
+                    <!-- <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="log-in-btn-modal">Sign in</button> -->
+                    <button type="submit" class="btn btn-secondary" id="log-in-btn-modal">Sign in</button>
                 </div>
             </div>
         </div>
@@ -71,19 +72,8 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
+                    
                     <!-- dropdown - doctor select -->
-                    <!-- <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Choose a doctor
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><button class="dropdown-item" type="button" id="btn-therapist">Therapist</button></li>
-                            <li><button class="dropdown-item" type="button" id="btn-cardiologist">Cardiologist</button>
-                            </li>
-                            <li><button class="dropdown-item" type="button" id="btn-dentist">Dentist</button></li>
-                        </ul>
-                    </div> -->
                     <form id="doctor-selection">
                         <label for="doctor">Select a doctor:</label>
                         <select name="doctor" id="doctor" style="padding: 8px;">
@@ -96,15 +86,15 @@
                         <!-- form for filling in for visit -->
                         <div id="visit-form" class="hidden-element">
                             <div class="mb-3">
-                                <label for="visit-purpose" class="col-form-label">Purpose of the visit:</label>
+                                <label for="visit-purpose" class="col-form-label">Purpose of the visit*:</label>
                                 <input type="text" class="form-control" id="visit-purpose">
                             </div>
                             <div class="mb-3">
-                                <label for="visit-description" class="col-form-label">Description of the visit:</label>
+                                <label for="visit-description" class="col-form-label">Description of the visit*:</label>
                                 <input type="text" class="form-control" id="visit-description">
                             </div>
                             <div class="mb-3">
-                                <label for="urgency">Select an urgency:</label>
+                                <label for="urgency">Select an urgency*:</label>
                                 <select name="urgency" id="urgency" style="padding: 8px;">
                                     <option value="ordinary">Ordinary</option>
                                     <option value="priority">Priority</option>
@@ -112,14 +102,15 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="visit-patient" class="col-form-label">Patient full name:</label>
+                                <label for="visit-patient" class="col-form-label">Patient full name*:</label>
                                 <input type="text" class="form-control" id="visit-patient">
                             </div>
 
                             <div class="visit-add-info"></div>
 
                             <div class="visit-form-btns">
-                                <button class="btn btn-warning" type="submit" id="create-visit-confirm" data-bs-dismiss="modal">Create</button>
+                                <!-- <p class='warning hidden-element'>Всі поля мають бути заповнені!</p> -->
+                                <button class="btn btn-warning" type="button" id="create-visit-confirm">Create</button>
                                 <button class="btn btn-secondary" type="submit" id="create-visit-cancel" data-bs-dismiss="modal">Close</button>
                             </div>
                         </div>
