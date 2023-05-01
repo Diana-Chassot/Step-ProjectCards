@@ -29,12 +29,12 @@ async function postCards() {
         'Authorization': `Bearer ${API_TOKEN}`
       },
       body: JSON.stringify({
-        nameClient: "ExapmleName",
-        doctor: "Cardiologist",
-        briefVisitDescr: "here will be data",
-        urgency: "here will be data",
+        nameClient: "Marianna",
+        doctor: "dont need doc",
+        briefVisitDescr: "I am not sick just come here to rest",
+        urgency: "small",
         bodyMassIndex: undefined,
-        age: 55,
+        age: 33,
         bloodPressure: undefined,
         pastDiseasesCardiovascularSystem: undefined,
         dateOfLastVisit: undefined
@@ -153,7 +153,7 @@ class Card {
     this.doctor = doctor;
     this.urgency = urgency;
     this.purposeVisit = purposeOfTheVisit,
-      this.visitDescr = briefVisitDescr;
+    this.visitDescr = briefVisitDescr;
   }
   /* delete card */
   async deleteCard() {
@@ -164,21 +164,21 @@ class Card {
       const API_URL_ID = `${API_URL}/${this.id}`;
 
       const response = await fetch(API_URL_ID, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${API_TOKEN}`
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${API_TOKEN}`
         },
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete card');
+      
+      if (response.ok) {
+        const cardElement = document.getElementById(this.id);
+        cardElement.remove();
       }
 
-      this.element.remove();
       hideSpinner()
     }
     catch (error) {
-      console.error(error);
+    console.error(error);
     }
   }
   /* корректировка карточки. не доделано*/
@@ -189,11 +189,11 @@ class Card {
   templateCard() {
 
     const card = `
-      <div class="card-element mb-3" style="max-width: 25rem">
-        <div class="card border-warning shadow text-center col-xl " id="${this.id}">
+      <div class="card-element mb-3" style="max-width: 25rem" id="${this.id}">
+        <div class="card border-warning shadow text-center col-xl" >
           <div class="card-header border-warning bg-dark">
               <h2 class="card-title text-uppercase text-warning">New visit</h2>
-              <button type="button" class="btn-delete btn-close btn-close-white"></button>
+              <button type="button" class="btn-close btn-close-white" id="delete-${this.id}"></button>
           </div>
           <div class="card-body">
             <p class="text-uppercase">${this.nameClient}</p>
@@ -242,13 +242,22 @@ class Card {
   }
   /* добавление карточки в разметку */
   renderCard() {
+
     const cardsContent = document.querySelector(".cards-content");
 
     let fragment = this.templateCard();
 
     cardsContent.insertAdjacentHTML("afterbegin", fragment);
+    this.addEventListener();
+
+  }
+  addEventListener() {
+    const deleteBtn = document.getElementById(`delete-${this.id}`);
+    deleteBtn.addEventListener('click', this.deleteCard.bind(this));
   }
 };
+
+
 class TherapistCard extends Card {
 
   constructor({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr, age }) {
@@ -305,7 +314,7 @@ class DentistCard extends Card {
 };
 /* Add Speciall Details */
 function addSpecialDetails(detailsElements) {
-  
+
   const cardDetails = document.querySelector(".card-details");
 
   detailsElements.forEach((element) => {
@@ -315,6 +324,7 @@ function addSpecialDetails(detailsElements) {
     cardDetails.insertAdjacentHTML("beforeend", template)
   });
 }
+
 
 const logInModal = document.getElementById('logInModal')
 if (logInModal) {
@@ -342,20 +352,20 @@ const logInModalBtn = document.querySelector('#log-in-btn-modal');
 const createVisitBtn = document.querySelector('#create-visit-btn');
 
 logInModalBtn.addEventListener('click', () => {
-    if(userEmail.value !== '' && userPassword.value !== '') {
-        logInDiv.classList.toggle('hidden-element');
-        createVisitDiv.classList.toggle('hidden-element');
-        getCards();
-    }
+  if (userEmail.value !== '' && userPassword.value !== '') {
+    logInDiv.classList.toggle('hidden-element');
+    createVisitDiv.classList.toggle('hidden-element');
+    getCards();
+  }
 })
 
 /* модальне вікно для створення візиту */
 const createVisitModal = document.getElementById('createVisitModal')
 if (createVisitModal) {
-    createVisitModal.addEventListener('show.bs.modal', event => {
+  createVisitModal.addEventListener('show.bs.modal', event => {
     // Button that triggered the modal
     const button = event.relatedTarget
-    })
+  })
 }
 
 /* форма для створення візиту */
@@ -364,36 +374,36 @@ const visitForm = document.getElementById('visit-form');
 const visitAddInfo = document.querySelector('.visit-add-info');
 
 selectDoctorBtn.addEventListener('click', (ev) => {
-    ev.preventDefault();
-    showForm();
-    selectDoctorBtn.classList.add('disabled');
+  ev.preventDefault();
+  showForm();
+  selectDoctorBtn.classList.add('disabled');
 })
 
 const doctorSelect = document.getElementById('doctor');
 function showForm() {
-    let formAddFields = '';
-    let doctor = doctorSelect.value;
+  let formAddFields = '';
+  let doctor = doctorSelect.value;
 
-    if (doctor === 'therapist') {
-        formAddFields = `
+  if (doctor === 'therapist') {
+    formAddFields = `
             <div class="mb-3">
                 <label for="visit-age" class="col-form-label">Patient age:</label>
                 <input type="text" class="form-control" id="visit-age">
             </div>
         `
-    }
+  }
 
-    if (doctor === 'dentist') {
-        formAddFields = `
+  if (doctor === 'dentist') {
+    formAddFields = `
             <div class="mb-3">
                 <label for="visit-last" class="col-form-label">Last visit:</label>
                 <input type="date" class="form-control" id="visit-last">
             </div>
         `
-    }
+  }
 
-    if (doctor === 'cardiologist') {
-        formAddFields = `
+  if (doctor === 'cardiologist') {
+    formAddFields = `
             <div class="mb-3">
                 <label for="visit-normal-pressure" class="col-form-label">Normal pressure:</label>
                 <input type="text" class="form-control" id="visit-normal-pressure">
@@ -411,55 +421,55 @@ function showForm() {
                 <input type="text" class="form-control" id="visit-age">
             </div>
         `
-    }
+  }
 
-    visitAddInfo.insertAdjacentHTML('afterbegin', formAddFields);
-    visitForm.classList.remove('hidden-element')
+  visitAddInfo.insertAdjacentHTML('afterbegin', formAddFields);
+  visitForm.classList.remove('hidden-element')
 }
 
 /* зміна полів форми для створення візиту */
 doctorSelect.addEventListener('change', () => {
-    hideForm();
-    deleteAddInfo();
-    selectDoctorBtn.classList.remove('disabled');
+  hideForm();
+  deleteAddInfo();
+  selectDoctorBtn.classList.remove('disabled');
 })
 
 /* підтвердження створення візиту*/
 const createVisitConfirmBtn = document.getElementById('create-visit-confirm');
 createVisitConfirmBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    postCards();
+  e.preventDefault();
+  postCards();
 })
 
 /* скасування створення візиту*/
 const createVisitCancelBtn = document.getElementById('create-visit-cancel');
 createVisitCancelBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    hideForm();
-    clearVisitFormFields();
-    deleteAddInfo();
-    selectDoctorBtn.classList.remove('disabled');
+  e.preventDefault();
+  hideForm();
+  clearVisitFormFields();
+  deleteAddInfo();
+  selectDoctorBtn.classList.remove('disabled');
 })
 
 function clearVisitFormFields() {
-    const visitModalFields = visitForm.querySelectorAll('input');
+  const visitModalFields = visitForm.querySelectorAll('input');
 
-    visitModalFields.forEach( field => { 
-        field.value = ''
-    });
+  visitModalFields.forEach(field => {
+    field.value = ''
+  });
 
-    doctorSelect.value = 'therapist';
+  doctorSelect.value = 'therapist';
 
-    const visitUrgencySelect = document.getElementById('urgency');
-    visitUrgencySelect.value = 'ordinary';
+  const visitUrgencySelect = document.getElementById('urgency');
+  visitUrgencySelect.value = 'ordinary';
 }
 
 function deleteAddInfo() {
-    Array.from(visitAddInfo.children).forEach(child => {
-        child.remove();
-    })
+  Array.from(visitAddInfo.children).forEach(child => {
+    child.remove();
+  })
 }
 
 function hideForm() {
-    visitForm.classList.add('hidden-element')
+  visitForm.classList.add('hidden-element')
 }
