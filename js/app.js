@@ -9,7 +9,7 @@ import { createNewVisit } from "./visit.js"
 /* CustomHttp */
 function customHttp() {
 
-  const API_TOKEN = "7824dd3b-6167-4226-8604-be4289acc8b1";
+  const API_TOKEN = "7230c3ef-1075-4f6e-bdbd-9c4639644533";
   const API_URL = "https://ajax.test-danit.com/api/v2/cards";
   return { API_TOKEN, API_URL };
 
@@ -172,21 +172,21 @@ class Card {
       const API_URL_ID = `${API_URL}/${this.id}`;
 
       const response = await fetch(API_URL_ID, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${API_TOKEN}`
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${API_TOKEN}`
         },
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete card');
+      
+      if (response.ok) {
+        const cardElement = document.getElementById(this.id);
+        cardElement.remove();
       }
 
-      this.element.remove();
       hideSpinner()
     }
     catch (error) {
-      console.error(error);
+    console.error(error);
     }
   }
   /* корректировка карточки. не доделано*/
@@ -197,11 +197,11 @@ class Card {
   templateCard() {
 
     const card = `
-      <div class="card-element mb-3" style="max-width: 25rem">
-        <div class="card border-warning shadow text-center col-xl " id="${this.id}">
+      <div class="card-element mb-3" style="max-width: 25rem" id="${this.id}">
+        <div class="card border-warning shadow text-center col-xl" >
           <div class="card-header border-warning bg-dark">
               <h2 class="card-title text-uppercase text-warning">New visit</h2>
-              <button type="button" class="btn-delete btn-close btn-close-white"></button>
+              <button type="button" class="btn-close btn-close-white" id="delete-${this.id}"></button>
           </div>
           <div class="card-body">
             <p class="text-uppercase">${this.nameClient}</p>
@@ -250,13 +250,21 @@ class Card {
   }
   /* добавление карточки в разметку */
   renderCard() {
+
     const cardsContent = document.querySelector(".cards-content");
 
     let fragment = this.templateCard();
 
     cardsContent.insertAdjacentHTML("afterbegin", fragment);
+    this.addEventListener();
+
+  }
+  addEventListener() {
+    const deleteBtn = document.getElementById(`delete-${this.id}`);
+    deleteBtn.addEventListener('click', this.deleteCard.bind(this));
   }
 };
+
 class TherapistCard extends Card {
 
   constructor({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr, age }) {
@@ -288,8 +296,8 @@ class CardiologistCard extends Card {
     const detailsElements = [
       { text: "Age: ", value: this.age },
       { text: "Body Mass Index: ", value: this.bodyMassIndex },
-      { text: "Blood Pressure ", value: this.bloodPressure },
-      { text: "Cardiovascular system ", value: this.pDCSystem }
+      { text: "Blood Pressure: ", value: this.bloodPressure },
+      { text: "Cardiovascular system: ", value: this.pDCSystem }
     ];
     addSpecialDetails(detailsElements);
   }
@@ -313,7 +321,7 @@ class DentistCard extends Card {
 };
 /* Add Speciall Details */
 function addSpecialDetails(detailsElements) {
-  
+
   const cardDetails = document.querySelector(".card-details");
 
   detailsElements.forEach((element) => {
