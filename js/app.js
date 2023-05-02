@@ -1,3 +1,11 @@
+/* modules */
+import { Modal } from "./modal.js"
+import { Visit } from "./visit.js"
+import { VisitTherapist } from "./visit.js"
+import { VisitCardiologist } from "./visit.js"
+import { VisitDentist } from "./visit.js"
+import { createNewVisit } from "./visit.js"
+
 /* CustomHttp */
 function customHttp() {
   const API_TOKEN = "7230c3ef-1075-4f6e-bdbd-9c4639644533";
@@ -14,7 +22,8 @@ function checkStatusResponse(response) {
   }
 };
 /*Post Cards*/
-async function postCards() {
+async function postCards({nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, age, bodyMassIndex, bloodPressure, pastDiseasesCardiovascularSystem, dateOfLastVisit}) {
+
   try {
     showSpinner()
 
@@ -26,15 +35,16 @@ async function postCards() {
         'Authorization': `Bearer ${API_TOKEN}`
       },
       body: JSON.stringify({
-        nameClient: "Marianna",
-        doctor: "Dentist",
-        briefVisitDescr: "I am not sick just come here to rest",
-        urgency: "small",
-        bodyMassIndex: undefined,
-        age: 33,
-        bloodPressure: undefined,
-        pastDiseasesCardiovascularSystem: undefined,
-        dateOfLastVisit: undefined
+        nameClient: nameClient,
+        doctor: doctor,
+        purposeOfTheVisit: purposeOfTheVisit, 
+        briefVisitDescr: briefVisitDescr,
+        urgency: urgency,
+        age: age,
+        bodyMassIndex: bodyMassIndex,
+        bloodPressure: bloodPressure,
+        pDCSystem: pastDiseasesCardiovascularSystem,
+        dateOfLastVisit: dateOfLastVisit
       })
     });
 
@@ -80,14 +90,14 @@ async function getCards() {
 };
 /* Check and filter type of card */
 function filterCardByDoctor(cardData) {
-  if (cardData.doctor === "Dentist") {
-  return new DentistCard(cardData);
+  if (cardData.doctor === "dentist") {
+    return new DentistCard(cardData);
   }
-  else if (cardData.doctor === "Cardiologist") {
-  return new CardiologistCard(cardData);
+  else if (cardData.doctor === "cardiologist") {
+    return new CardiologistCard(cardData);
   }
-  else if (cardData.doctor === "Therapist") {
-  return new TherapistCard(cardData)
+  else if (cardData.doctor === "therapist") {
+    return new TherapistCard(cardData)
   }
   else {
   return new Card(cardData)
@@ -303,8 +313,8 @@ class CardiologistCard extends Card {
     const detailsElements = [
       { text: "Age: ", value: this.age },
       { text: "Body Mass Index: ", value: this.bodyMassIndex },
-      { text: "Blood Pressure ", value: this.bloodPressure },
-      { text: "Cardiovascular system ", value: this.pDCSystem }
+      { text: "Blood Pressure: ", value: this.bloodPressure },
+      { text: "Cardiovascular system: ", value: this.pDCSystem }
     ];
 
     addSpecialDetails(detailsElements);
@@ -342,85 +352,70 @@ const cardDetails = document.querySelector(".card-details");
     });
 };
 
+/* модальні вікна */
 
-const logInModal = document.getElementById('logInModal')
-if (logInModal) {
-  logInModal.addEventListener('show.bs.modal', event => {
-    // Button that triggered the modal
-    const button = event.relatedTarget
-    // Extract info from data-bs-* attributes
-    const recipient = button.getAttribute('data-bs-whatever')
-    // If necessary, you could initiate an Ajax request here
-    // and then do the updating in a callback.
-
-    // Update the modal's content.
-    // const modalBodyInput = logInModal.querySelector('.modal-body input')
-    // modalBodyInput.value = recipient
-  })
-}
+/* вхід */
+const logIn = new Modal('logInModal', 'log-in-btn-modal', 'Please enter your email and password to sign in!');
+const logInModal = logIn.getModalContent();
+const logInModalInputs = logIn.getModalInputs();
+const logInModalBtn = logIn.getModalConfirmBtn();
 
 const logInDiv = document.querySelector('#log-in-div');
 const createVisitDiv = document.querySelector('#create-visit-div');
 
-const userEmail = document.querySelector('#user-email');
-const userPassword = document.querySelector('#user-password');
+logIn.listenToInputs(logInModal, logInModalInputs, logInModalBtn);
+logInModalBtn.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    if(logIn.checkInputs(logInModalInputs, logInModalBtn)) {
+        logInDiv.classList.toggle('hidden-element');
+        createVisitDiv.classList.toggle('hidden-element');
 
-const logInModalBtn = document.querySelector('#log-in-btn-modal');
-const createVisitBtn = document.querySelector('#create-visit-btn');
-
-logInModalBtn.addEventListener('click', () => {
-  if (userEmail.value !== '' && userPassword.value !== '') {
-    logInDiv.classList.toggle('hidden-element');
-    createVisitDiv.classList.toggle('hidden-element');
-    getCards();
-  }
+        getCards();        
+    } else {
+        logIn.addWarning();
+    }
 })
 
-/* модальне вікно для створення візиту */
-const createVisitModal = document.getElementById('createVisitModal')
-if (createVisitModal) {
-  createVisitModal.addEventListener('show.bs.modal', event => {
-    // Button that triggered the modal
-    const button = event.relatedTarget
-  })
-}
-
 /* форма для створення візиту */
+const createVisit = new Modal('createVisitModal', 'create-visit-confirm', 'All mandatory fields must be filled!');
+const createVisitModal = createVisit.getModalContent();
+const createVisitInputs = createVisit.getModalInputs();
+const createVisitConfirmBtn = createVisit.getModalConfirmBtn();
+
+const doctorSelect = document.getElementById('doctor');
 const selectDoctorBtn = document.getElementById('select-doctor-btn');
 const visitForm = document.getElementById('visit-form');
 const visitAddInfo = document.querySelector('.visit-add-info');
 
 selectDoctorBtn.addEventListener('click', (ev) => {
-  ev.preventDefault();
-  showForm();
-  selectDoctorBtn.classList.add('disabled');
+    ev.preventDefault();
+    showForm();
+    selectDoctorBtn.classList.add('disabled');
 })
 
-const doctorSelect = document.getElementById('doctor');
 function showForm() {
-  let formAddFields = '';
-  let doctor = doctorSelect.value;
+    let formAddFields = '';
 
-  if (doctor === 'therapist') {
-    formAddFields = `
+    if (doctorSelect.value === 'therapist') {
+        formAddFields = `
             <div class="mb-3">
                 <label for="visit-age" class="col-form-label">Patient age:</label>
                 <input type="text" class="form-control" id="visit-age">
             </div>
         `
-  }
+    }
 
-  if (doctor === 'dentist') {
-    formAddFields = `
+    if (doctorSelect.value === 'dentist') {
+        formAddFields = `
             <div class="mb-3">
                 <label for="visit-last" class="col-form-label">Last visit:</label>
                 <input type="date" class="form-control" id="visit-last">
             </div>
         `
-  }
+    }
 
-  if (doctor === 'cardiologist') {
-    formAddFields = `
+    if (doctorSelect.value === 'cardiologist') {
+        formAddFields = `
             <div class="mb-3">
                 <label for="visit-normal-pressure" class="col-form-label">Normal pressure:</label>
                 <input type="text" class="form-control" id="visit-normal-pressure">
@@ -438,55 +433,88 @@ function showForm() {
                 <input type="text" class="form-control" id="visit-age">
             </div>
         `
-  }
+    }
 
-  visitAddInfo.insertAdjacentHTML('afterbegin', formAddFields);
-  visitForm.classList.remove('hidden-element')
+    visitAddInfo.insertAdjacentHTML('afterbegin', formAddFields);
+    visitForm.classList.remove('hidden-element')
 }
 
 /* зміна полів форми для створення візиту */
 doctorSelect.addEventListener('change', () => {
-  hideForm();
-  deleteAddInfo();
-  selectDoctorBtn.classList.remove('disabled');
+    clearForm();
+
+    const urgencySelect = document.getElementById('urgency');
+    urgencySelect.value = urgencySelect.children[0].value;
 })
 
 /* підтвердження створення візиту*/
-const createVisitConfirmBtn = document.getElementById('create-visit-confirm');
+createVisit.listenToInputs(createVisitModal, createVisitInputs, createVisitConfirmBtn);
+
 createVisitConfirmBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  postCards();
+    e.preventDefault();
+    if(createVisit.checkInputs(createVisitInputs, createVisitConfirmBtn)) {
+        postCards(createNewVisit());
+            
+        clearForm();
+        clearSelectFields();
+        createVisitConfirmBtn.removeAttribute('data-bs-dismiss', 'modal');
+    } else {
+        createVisit.addWarning();
+    }
 })
 
 /* скасування створення візиту*/
 const createVisitCancelBtn = document.getElementById('create-visit-cancel');
 createVisitCancelBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  hideForm();
-  clearVisitFormFields();
-  deleteAddInfo();
-  selectDoctorBtn.classList.remove('disabled');
+    e.preventDefault();
+
+    clearForm();
+    clearSelectFields();
 })
 
-function clearVisitFormFields() {
-  const visitModalFields = visitForm.querySelectorAll('input');
-
-  visitModalFields.forEach(field => {
-    field.value = ''
-  });
-
-  doctorSelect.value = 'therapist';
-
-  const visitUrgencySelect = document.getElementById('urgency');
-  visitUrgencySelect.value = 'ordinary';
-}
-
-function deleteAddInfo() {
-  Array.from(visitAddInfo.children).forEach(child => {
-    child.remove();
-  })
+/* очистка форми і всіх полів */
+function clearForm() {
+    hideForm();
+    deleteAddInfo();
+    deleteWarning();
+    clearInputFields();
+    selectDoctorBtn.classList.remove('disabled');
 }
 
 function hideForm() {
-  visitForm.classList.add('hidden-element')
+    visitForm.classList.add('hidden-element')
 }
+
+function clearInputFields() {
+    const inputModalFields = document.querySelectorAll('input');
+    inputModalFields.forEach( field => { 
+        field.value = '';
+        field.style.borderColor = '';
+    });
+}
+
+function clearSelectFields() {
+    const selectModalFields = document.querySelectorAll('select');
+    Array.from(selectModalFields).forEach(field => {
+        field.value = field.children[0].value;
+    })
+}
+
+function deleteAddInfo() {
+    Array.from(visitAddInfo.children).forEach(child => {
+        child.remove();
+    });
+    createVisitModal.querySelector('.warning') ? createVisitModal.querySelector('.warning').remove() : '';
+
+}
+
+function deleteWarning() {
+    document.querySelector('.warning') ? document.querySelector('.warning').remove() : '';
+}
+
+document.addEventListener('click', (ev) => {
+    if(ev.target.classList.contains('modal')) {
+        clearForm();
+        clearSelectFields();
+    }
+})
