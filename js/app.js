@@ -2,7 +2,7 @@
 /* CustomHttp */
 function customHttp() {
 
-  const API_TOKEN = "7230c3ef-1075-4f6e-bdbd-9c4639644533";
+  const API_TOKEN = "7824dd3b-6167-4226-8604-be4289acc8b1";
   const API_URL = "https://ajax.test-danit.com/api/v2/cards";
   return { API_TOKEN, API_URL };
 
@@ -17,7 +17,7 @@ function checkStatusResponse(response) {
   }
 };
 /*Post Cards*/
-async function postCards() {
+async function postCards({nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, age, bodyMassIndex, bloodPressure, pastDiseasesCardiovascularSystem, dateOfLastVisit}) {
 
   try {
     showSpinner()
@@ -29,15 +29,16 @@ async function postCards() {
         'Authorization': `Bearer ${API_TOKEN}`
       },
       body: JSON.stringify({
-        nameClient: "ExapmleName",
-        doctor: "Cardiologist",
-        briefVisitDescr: "here will be data",
-        urgency: "here will be data",
-        bodyMassIndex: undefined,
-        age: 55,
-        bloodPressure: undefined,
-        pastDiseasesCardiovascularSystem: undefined,
-        dateOfLastVisit: undefined
+        nameClient: nameClient,
+        doctor: doctor,
+        purposeOfTheVisit: purposeOfTheVisit, 
+        briefVisitDescr: briefVisitDescr,
+        urgency: urgency,
+        age: age,
+        bodyMassIndex: bodyMassIndex,
+        bloodPressure: bloodPressure,
+        pDCSystem: pastDiseasesCardiovascularSystem,
+        dateOfLastVisit: dateOfLastVisit
       })
     });
 
@@ -87,13 +88,13 @@ async function getCards() {
 };
 /* Check and filter type of card */
 function filterCardByDoctor(cardData) {
-  if (cardData.doctor === "Dentist") {
+  if (cardData.doctor === "dentist") {
     return new DentistCard(cardData);
   }
-  else if (cardData.doctor === "Cardiologist") {
+  else if (cardData.doctor === "cardiologist") {
     return new CardiologistCard(cardData);
   }
-  else if (cardData.doctor === "Therapist") {
+  else if (cardData.doctor === "therapist") {
     return new TherapistCard(cardData)
   }
   else {
@@ -153,7 +154,7 @@ class Card {
     this.doctor = doctor;
     this.urgency = urgency;
     this.purposeVisit = purposeOfTheVisit,
-      this.visitDescr = briefVisitDescr;
+    this.visitDescr = briefVisitDescr;
   }
   /* delete card */
   async deleteCard() {
@@ -409,9 +410,8 @@ selectDoctorBtn.addEventListener('click', (ev) => {
 
 function showForm() {
     let formAddFields = '';
-    let doctor = doctorSelect.value;
 
-    if (doctor === 'therapist') {
+    if (doctorSelect.value === 'therapist') {
         formAddFields = `
             <div class="mb-3">
                 <label for="visit-age" class="col-form-label">Patient age:</label>
@@ -420,7 +420,7 @@ function showForm() {
         `
     }
 
-    if (doctor === 'dentist') {
+    if (doctorSelect.value === 'dentist') {
         formAddFields = `
             <div class="mb-3">
                 <label for="visit-last" class="col-form-label">Last visit:</label>
@@ -429,7 +429,7 @@ function showForm() {
         `
     }
 
-    if (doctor === 'cardiologist') {
+    if (doctorSelect.value === 'cardiologist') {
         formAddFields = `
             <div class="mb-3">
                 <label for="visit-normal-pressure" class="col-form-label">Normal pressure:</label>
@@ -468,8 +468,8 @@ createVisit.listenToInputs(createVisitModal, createVisitInputs, createVisitConfi
 createVisitConfirmBtn.addEventListener('click', (e) => {
     e.preventDefault();
     if(createVisit.checkInputs(createVisitInputs, createVisitConfirmBtn)) {
-        postCards();
-
+        postCards(createNewVisit());
+            
         clearForm();
         clearSelectFields();
         createVisitConfirmBtn.removeAttribute('data-bs-dismiss', 'modal');
@@ -477,6 +477,83 @@ createVisitConfirmBtn.addEventListener('click', (e) => {
         createVisit.addWarning();
     }
 })
+
+class Visit {
+    constructor(nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency) {
+        this.nameClient = nameClient,
+        this.doctor = doctor,
+        this.purposeOfTheVisit = purposeOfTheVisit,
+        this.briefVisitDescr = briefVisitDescr,
+        this.urgency = urgency
+    }
+}
+
+class VisitTherapist extends Visit {
+    constructor(nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, age) {
+        super(nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency),
+        this.age = age
+    }
+}
+
+class VisitCardiologist extends Visit {
+    constructor(nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, age, bodyMassIndex, bloodPressure, pastDiseasesCardiovascularSystem) {
+        super(nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency),
+        this.age = age,
+        this.bodyMassIndex = bodyMassIndex,
+        this.bloodPressure = bloodPressure,
+        this.pastDiseasesCardiovascularSystem = pastDiseasesCardiovascularSystem
+    }
+}
+
+class VisitDentist extends Visit {
+    constructor(nameClient, doctor, briefVisitDescr, urgency, dateOfLastVisit) {
+        super(nameClient, doctor, briefVisitDescr, urgency),
+        this.dateOfLastVisit = dateOfLastVisit
+    }
+}
+
+function createNewVisit() {
+    let newVisit;
+
+    if (doctorSelect.value === 'therapist') {
+        newVisit = new VisitTherapist(
+            document.getElementById('visit-patient').value,
+            document.getElementById('doctor').value,
+            document.getElementById('visit-purpose').value,
+            document.getElementById('visit-description').value,
+            document.getElementById('urgency').value,
+            document.getElementById('visit-age').value
+        )
+    }
+
+    if (doctorSelect.value === 'dentist') {
+        newVisit = new VisitDentist(
+            document.getElementById('visit-patient').value,
+            document.getElementById('doctor').value,
+            document.getElementById('visit-purpose').value,
+            document.getElementById('visit-description').value,
+            document.getElementById('urgency').value,
+            document.getElementById('visit-last').value
+        )
+    }
+
+    if (doctorSelect.value === 'cardiologist') {
+        newVisit = new VisitCardiologist(
+            document.getElementById('visit-patient').value,
+            document.getElementById('doctor').value,
+            document.getElementById('visit-purpose').value,
+            document.getElementById('visit-description').value,
+            document.getElementById('urgency').value,
+            document.getElementById('visit-age').value,
+            document.getElementById('visit-BMI').value,
+            document.getElementById('visit-normal-pressure').value,
+            document.getElementById('visit-heart-diseases').value
+        )
+    }
+
+    const {nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, age, bodyMassIndex, bloodPressure, pastDiseasesCardiovascularSystem, dateOfLastVisit} = newVisit;
+    return {nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, age, bodyMassIndex, bloodPressure, pastDiseasesCardiovascularSystem, dateOfLastVisit}
+}
 
 /* скасування створення візиту*/
 const createVisitCancelBtn = document.getElementById('create-visit-cancel');
