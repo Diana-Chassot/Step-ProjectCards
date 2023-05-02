@@ -1,3 +1,10 @@
+/* modules */
+import { Modal } from "./modal.js"
+import { Visit } from "./visit.js"
+import { VisitTherapist } from "./visit.js"
+import { VisitCardiologist } from "./visit.js"
+import { VisitDentist } from "./visit.js"
+import { createNewVisit } from "./visit.js"
 
 /* CustomHttp */
 function customHttp() {
@@ -318,56 +325,6 @@ function addSpecialDetails(detailsElements) {
 }
 
 /* модальні вікна */
-class Modal {
-    constructor(id, btnId, text) {
-        this.id = id;
-        this.btnId = btnId;
-        this.text = text;
-    };
-
-    getModalContent() {
-        const modalContent = document.getElementById(`${this.id}`);
-        return modalContent;
-    }
-
-    getModalInputs() {
-        const modalInputs = Array.from(document.getElementById(`${this.id}`).getElementsByTagName('input'));
-        return modalInputs;
-    }
-
-    getModalConfirmBtn() {
-        const modalConfirmBtn = document.getElementById(`${this.id}`).querySelector(`#${this.btnId}`);
-        return modalConfirmBtn;
-    }
-    
-    checkInputs(modalInputs, modalConfirmBtn) {
-        let res = true;
-        modalInputs.forEach(input => {
-            if(input.value == '') {
-                res = false;
-                modalConfirmBtn.removeAttribute('data-bs-dismiss', 'modal');
-                input.style.borderColor = 'red';
-            }
-        })
-        return res;
-    }
-
-    listenToInputs(modalContent, modalInputs, modalConfirmBtn) {
-        modalInputs.forEach(input => {
-            input.addEventListener('input', () => {
-                input.style.borderColor = '';
-                modalContent.querySelector('.warning') ? modalContent.querySelector('.warning').remove() : '';                
-                modalConfirmBtn.setAttribute('data-bs-dismiss', 'modal');
-                this.checkInputs(modalInputs, modalConfirmBtn);
-            })
-        })
-    }
-
-    addWarning() {
-        this.getModalContent().querySelector('.warning') ? '' : this.getModalConfirmBtn().insertAdjacentHTML('beforebegin', `<p class='warning' style='color: red'>${this.text}</p>`);
-    }
-
-}
 
 /* вхід */
 const logIn = new Modal('logInModal', 'log-in-btn-modal', 'Please enter your email and password to sign in!');
@@ -478,82 +435,48 @@ createVisitConfirmBtn.addEventListener('click', (e) => {
     }
 })
 
-class Visit {
-    constructor(nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency) {
-        this.nameClient = nameClient,
-        this.doctor = doctor,
-        this.purposeOfTheVisit = purposeOfTheVisit,
-        this.briefVisitDescr = briefVisitDescr,
-        this.urgency = urgency
-    }
-}
+// function createNewVisit() {
+//     let newVisit;
 
-class VisitTherapist extends Visit {
-    constructor(nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, age) {
-        super(nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency),
-        this.age = age
-    }
-}
+//     if (doctorSelect.value === 'therapist') {
+//         newVisit = new VisitTherapist(
+//             document.getElementById('visit-patient').value,
+//             document.getElementById('doctor').value,
+//             document.getElementById('visit-purpose').value,
+//             document.getElementById('visit-description').value,
+//             document.getElementById('urgency').value,
+//             document.getElementById('visit-age').value
+//         )
+//     }
 
-class VisitCardiologist extends Visit {
-    constructor(nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, age, bodyMassIndex, bloodPressure, pastDiseasesCardiovascularSystem) {
-        super(nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency),
-        this.age = age,
-        this.bodyMassIndex = bodyMassIndex,
-        this.bloodPressure = bloodPressure,
-        this.pastDiseasesCardiovascularSystem = pastDiseasesCardiovascularSystem
-    }
-}
+//     if (doctorSelect.value === 'dentist') {
+//         newVisit = new VisitDentist(
+//             document.getElementById('visit-patient').value,
+//             document.getElementById('doctor').value,
+//             document.getElementById('visit-purpose').value,
+//             document.getElementById('visit-description').value,
+//             document.getElementById('urgency').value,
+//             document.getElementById('visit-last').value
+//         )
+//     }
 
-class VisitDentist extends Visit {
-    constructor(nameClient, doctor, briefVisitDescr, urgency, dateOfLastVisit) {
-        super(nameClient, doctor, briefVisitDescr, urgency),
-        this.dateOfLastVisit = dateOfLastVisit
-    }
-}
+//     if (doctorSelect.value === 'cardiologist') {
+//         newVisit = new VisitCardiologist(
+//             document.getElementById('visit-patient').value,
+//             document.getElementById('doctor').value,
+//             document.getElementById('visit-purpose').value,
+//             document.getElementById('visit-description').value,
+//             document.getElementById('urgency').value,
+//             document.getElementById('visit-age').value,
+//             document.getElementById('visit-BMI').value,
+//             document.getElementById('visit-normal-pressure').value,
+//             document.getElementById('visit-heart-diseases').value
+//         )
+//     }
 
-function createNewVisit() {
-    let newVisit;
-
-    if (doctorSelect.value === 'therapist') {
-        newVisit = new VisitTherapist(
-            document.getElementById('visit-patient').value,
-            document.getElementById('doctor').value,
-            document.getElementById('visit-purpose').value,
-            document.getElementById('visit-description').value,
-            document.getElementById('urgency').value,
-            document.getElementById('visit-age').value
-        )
-    }
-
-    if (doctorSelect.value === 'dentist') {
-        newVisit = new VisitDentist(
-            document.getElementById('visit-patient').value,
-            document.getElementById('doctor').value,
-            document.getElementById('visit-purpose').value,
-            document.getElementById('visit-description').value,
-            document.getElementById('urgency').value,
-            document.getElementById('visit-last').value
-        )
-    }
-
-    if (doctorSelect.value === 'cardiologist') {
-        newVisit = new VisitCardiologist(
-            document.getElementById('visit-patient').value,
-            document.getElementById('doctor').value,
-            document.getElementById('visit-purpose').value,
-            document.getElementById('visit-description').value,
-            document.getElementById('urgency').value,
-            document.getElementById('visit-age').value,
-            document.getElementById('visit-BMI').value,
-            document.getElementById('visit-normal-pressure').value,
-            document.getElementById('visit-heart-diseases').value
-        )
-    }
-
-    const {nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, age, bodyMassIndex, bloodPressure, pastDiseasesCardiovascularSystem, dateOfLastVisit} = newVisit;
-    return {nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, age, bodyMassIndex, bloodPressure, pastDiseasesCardiovascularSystem, dateOfLastVisit}
-}
+//     const {nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, age, bodyMassIndex, bloodPressure, pastDiseasesCardiovascularSystem, dateOfLastVisit} = newVisit;
+//     return {nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, age, bodyMassIndex, bloodPressure, pastDiseasesCardiovascularSystem, dateOfLastVisit}
+// }
 
 /* скасування створення візиту*/
 const createVisitCancelBtn = document.getElementById('create-visit-cancel');
