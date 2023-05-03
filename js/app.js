@@ -533,3 +533,22 @@ function filterByUrgency() {
 //         // }
 //     })
 // }
+const input = document.getElementById("autocomplete-input");
+input.addEventListener("input", filterByKeyWord);
+function filterByKeyWord() {
+  let input, filter, cardElements, card, txtValue;
+  input = document.getElementById("autocomplete-input");
+  filter = input.value.toUpperCase();
+  cardElements = document.getElementsByClassName("card-element");
+
+  for (let i = 0; i < cardElements.length; i++) {
+    card = cardElements[i];
+    txtValue = card.textContent || card.innerText;
+    
+    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+      card.style.display = "";
+    } else {
+      card.style.display = "none";
+    }
+  }
+}
