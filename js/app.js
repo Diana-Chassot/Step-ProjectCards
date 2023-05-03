@@ -201,7 +201,7 @@ class Card {
 
   templateCard() {
     const card = `
-      <div class="card-element mb-3" style="max-width: 25rem" id="${this.id}">
+      <div class="card-element mb-3" style="max-width: 25rem" id="${this.id}" data-doctor='${this.doctor}' data-urgency='${this.urgency}'>
         <div class="card border-warning shadow text-center col-xl" >
           <div class="card-header border-warning bg-dark">
               <h2 class="card-title text-uppercase text-warning">New visit</h2>
@@ -321,6 +321,7 @@ logInModalBtn.addEventListener('click', (ev) => {
   if (logIn.checkInputs(logInModalInputs, logInModalBtn)) {
     logInDiv.classList.toggle('hidden-element');
     createVisitDiv.classList.toggle('hidden-element');
+    document.getElementById('filter-conditions').style.display = 'flex';
 
     getCards();
   } else {
@@ -478,3 +479,58 @@ document.addEventListener('click', (ev) => {
     deleteModalConfirmBtnEdit()
   }
 })
+
+
+/* фільтрація створених візитів за лікарем*/
+const doctorsList = document.getElementById('doctor-filter');
+doctorsList.addEventListener('change', filterByDoctor);
+function filterByDoctor() {
+    const cardsAll = Array.from(document.getElementById('all-cards').children);
+    cardsAll.forEach(card => {
+        card.style.display = '';
+
+        if(doctorsList.value === 'doctors') {
+            card.style.display = '';
+        } else if(doctorsList.value !== card.dataset.doctor) {
+            card.style.display = 'none';
+        }
+    })
+}
+
+/* фільтрація створених візитів за терміновістю*/
+const urgencyList = document.getElementById('urgency-filter');
+urgencyList.addEventListener('change', filterByUrgency);
+function filterByUrgency() {
+    const cardsAll = Array.from(document.getElementById('all-cards').children);
+    cardsAll.forEach(card => {
+        card.style.display = '';
+
+        if(urgencyList.value === 'urgency') {
+            card.style.display = '';
+        } else if(urgencyList.value !== card.dataset.urgency) {
+            card.style.display = 'none';
+        }
+    })
+}
+
+// const urgencyList = document.getElementById('urgency-filter');
+// urgencyList.addEventListener('change', () => {filterByUrgency('urgency')});
+// function filterByUrgency(param) {
+//     const filterParam = `${param}-filter`;
+//     const filterList = document.getElementById(`${filterParam}`);
+//     console.log(filterList.value);
+
+//     const cardsAll = Array.from(document.getElementById('all-cards').children);
+
+//     cardsAll.forEach(card => {
+//         const cardDataset = `card.dataset.${param}`;
+//         console.log(cardDataset)
+//         // card.style.display = '';
+
+//         // if(filterList.value === 'urgency' || filterList.value === 'doctors') {
+//         //     card.style.display = '';
+//         // } else if(filterList.value !== `card.dataset.${param}`) {
+//         //     card.style.display = 'none';
+//         // }
+//     })
+// }

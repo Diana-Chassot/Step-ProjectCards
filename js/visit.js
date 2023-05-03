@@ -77,8 +77,4 @@ function createNewVisit() {
     return {nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, age, bodyMassIndex, bloodPressure, pastDiseasesCardiovascularSystem, dateOfLastVisit}
 }
 
-export { Visit }
-export { VisitTherapist }
-export { VisitCardiologist }
-export { VisitDentist }
-export { createNewVisit }
+export { Visit, VisitTherapist, VisitCardiologist, VisitDentist, createNewVisit }

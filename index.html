@@ -124,8 +124,36 @@
     <main>
         <div class="container">
             <!-- form for filtering visits -->
-            <form action="">
-            </form>
+            <div id="filter-conditions" style="display: none; margin-bottom: 20px; justify-content: center;">
+                <div class="input-field" style="margin-right: 20px;">
+                    <label for="autocomplete-input">Search</label>
+                    <input
+                      type="text"
+                      id="autocomplete-input"
+                      class="autocomplete"
+                      name="search"
+                      style="padding: 6px; min-width: 300px;"
+                    />
+                </div>
+                <form action="" id="filter-by-doctor" >
+                    <select name="doctor" id="doctor-filter" style="padding: 8px; margin-right: 10px;">
+                        <option value="doctors">Filter by doctor</option>
+                        <option value="therapist">Therapist</option>
+                        <option value="cardiologist">Cardiologist</option>
+                        <option value="dentist">Dentist</option>
+                    </select>
+                </form>
+    
+                <form action="" id="filter-by-urgency">
+                    <select name="doctor" id="urgency-filter" style="padding: 8px;">
+                        <option value="urgency">Filter by urgency</option>
+                        <option value="ordinary">Ordinary</option>
+                        <option value="priority">Priority</option>
+                        <option value="urgent">Urgent</option>
+                    </select>
+                </form>
+            </div>
+
             <!-- list of created visits -->
 
         </div>
@@ -133,7 +161,7 @@
     </main>
     <section class="cards">
         <div class="container-fluid">
-            <div class="cards-content row text-center justify-content-center">
+            <div class="cards-content row text-center justify-content-center" id="all-cards">
                 <div class="spinner row justify-content-center">
                     <div class="spinner-grow text-dark">
                         <span class="visually-hidden">Loading...</span>
