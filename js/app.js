@@ -1,31 +1,17 @@
 /* modules */
 import { Modal } from "./modal.js"
-import { Visit } from "./visit.js"
-import { VisitTherapist } from "./visit.js"
-import { VisitCardiologist } from "./visit.js"
-import { VisitDentist } from "./visit.js"
-import { createNewVisit } from "./visit.js"
-
-/* CustomHttp */
-function customHttp() {
-
-  const API_TOKEN = "7230c3ef-1075-4f6e-bdbd-9c4639644533";
-  const API_URL = "https://ajax.test-danit.com/api/v2/cards";
-  return { API_TOKEN, API_URL };
-
-};
-/* CheckStatusResponse */
-function checkStatusResponse(response) {
-
-  if (response.ok) {
-    return response.json();
-  } else {
-    throw new Error('Error');
-  }
-};
+/* !!!!! */
+import { Visit, VisitTherapist, VisitCardiologist, VisitDentist, createNewVisit } from "./visit.js"
+import { showSpinner, hideSpinner } from "./spinner.js"
+import { checkCardsExist } from "./check-cards-exist.js"
+import { customHttp } from "./http.js"
+import { checkStatusResponse } from "./check-status-response.js"
+import { deleteFromHtml } from "./delete-elem-from-html.js"
+import { renderSpecialDetails } from "./render-speciall-details.js"
+import { deleteModalConfirmBtnEdit, createModalConfirmBtnEdit } from "./modal-confirm-btns.js"
 /*Post Cards*/
-async function postCards({nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, age, bodyMassIndex, bloodPressure, pastDiseasesCardiovascularSystem, dateOfLastVisit}) {
-
+async function postCards({ nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, age,
+  bodyMassIndex, bloodPressure, pastDiseasesCardiovascularSystem, dateOfLastVisit }) {
   try {
     showSpinner()
     const { API_TOKEN, API_URL } = customHttp();
@@ -38,38 +24,37 @@ async function postCards({nameClient, doctor, purposeOfTheVisit, briefVisitDescr
       body: JSON.stringify({
         nameClient: nameClient,
         doctor: doctor,
-        purposeOfTheVisit: purposeOfTheVisit, 
+        purposeOfTheVisit: purposeOfTheVisit,
         briefVisitDescr: briefVisitDescr,
         urgency: urgency,
-        age: age,
-        bodyMassIndex: bodyMassIndex,
-        bloodPressure: bloodPressure,
-        pDCSystem: pastDiseasesCardiovascularSystem,
+        age: age ,
+        bodyMassIndex: bodyMassIndex ,
+        bloodPressure: bloodPressure ,
+        pDCSystem: pastDiseasesCardiovascularSystem ,
         dateOfLastVisit: dateOfLastVisit
       })
     });
 
     const card = await checkStatusResponse(response);
     checkCardsExist(card);
-
     const newCard = filterCardByDoctor(card);
-
     newCard.renderCard();
-    newCard.renderSpecialDetails()
+    newCard.addSpecialDetails()
+  }
 
-    hideSpinner()
-  } catch (error) {
+  catch (error) {
     console.error(error);
+  }
+  finally {
+    hideSpinner()
   }
 };
 
 /*Get Cards */
 async function getCards() {
-
   try {
     showSpinner()
     const { API_TOKEN, API_URL } = customHttp();
-
     const response = await fetch(API_URL, {
       method: 'GET',
       headers: {
@@ -78,19 +63,19 @@ async function getCards() {
       },
     });
     const cards = await checkStatusResponse(response);
-
     checkCardsExist(cards);
     cards.forEach(card => {
-
       const newCard = filterCardByDoctor(card);
       newCard.renderCard();
-      newCard.renderSpecialDetails();
-
+      newCard.addSpecialDetails();
     });
+  }
 
-    hideSpinner()
-  } catch (error) {
+  catch (error) {
     console.error(error);
+  }
+  finally {
+    hideSpinner()
   }
 };
 /* Check and filter type of card */
@@ -107,95 +92,114 @@ function filterCardByDoctor(cardData) {
   else {
     return new Card(cardData)
   }
-
-}
-
-/* Check if cards exist  */
-function checkCardsExist(cards) {
-
-  if (cards.length === 0) {
-    addNoItemsMessage()
-  } else {
-    deleteNoItemsMessage()
-  }
 };
-/* Add Message "no item has been added" */
-function addNoItemsMessage() {
-
-  const cardsContent = document.querySelector(".cards-content");
-  const message = `
-  <span class="no-items">No items have been added</span>
-  `;
-  cardsContent.insertAdjacentHTML("afterbegin", message)
-};
-/* Delete Message "no item has been added" */
-function deleteNoItemsMessage() {
-
-  const noItemsMessage = document.querySelector('.no-items');
-  if (noItemsMessage) {
-    noItemsMessage.remove();
-  }
-};
-
-/* Show Spinner */
-function showSpinner() {
-
-  const spinner = document.querySelector(".spinner");
-  spinner.style.display = "block";
-};
-
-/* Hide Spinner */
-function hideSpinner() {
-
-  const spinner = document.querySelector(".spinner");
-  spinner.style.display = "none";
-};
-
 /* Card class and methodes delete, edit, render  */
 class Card {
-
   constructor({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr }) {
-
     this.id = id;
     this.nameClient = nameClient;
     this.doctor = doctor;
     this.urgency = urgency;
     this.purposeVisit = purposeOfTheVisit,
-    this.visitDescr = briefVisitDescr;
+      this.visitDescr = briefVisitDescr;
   }
   /* delete card */
   async deleteCard() {
-
     try {
       showSpinner()
       const { API_TOKEN, API_URL } = customHttp();
       const API_URL_ID = `${API_URL}/${this.id}`;
-
       const response = await fetch(API_URL_ID, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${API_TOKEN}`
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${API_TOKEN}`
         },
       });
-      
       if (response.ok) {
-        const cardElement = document.getElementById(this.id);
-        cardElement.remove();
+        deleteFromHtml(this.id)
       }
-
-      hideSpinner()
     }
     catch (error) {
-    console.error(error);
+      console.error(error);
+    }
+    finally {
+      hideSpinner()
     }
   }
-  /* корректировка карточки. не доделано*/
-  editCard() {
-    console.log(this.id);
+  /*  */
+  addSpecialDetails() {
+    console.log("666");
   }
-  /* разметка карточки */
-  templateCard() {
+  /* Edit Card*/
+  editCard() {
 
+    createModalConfirmBtnEdit()
+    const editVisitConfirmBtn = document.getElementById("edit-visit-confirm")
+    const inputModalFields = document.querySelectorAll('input');
+      inputModalFields.forEach(field => {
+        field.style.borderColor = '';
+      })
+    editVisitConfirmBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      this.updateCard(createNewVisit())
+      deleteModalConfirmBtnEdit()
+    })
+
+
+  }
+  /* UpdateCard */
+  async updateCard({ nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, age,
+    bodyMassIndex, bloodPressure, pastDiseasesCardiovascularSystem, dateOfLastVisit }) {
+
+    try {
+
+      showSpinner()
+      const { API_TOKEN, API_URL } = customHttp();
+      const API_URL_ID = `${API_URL}/${this.id}`;
+
+      const responsePut = await fetch(API_URL_ID, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${API_TOKEN}`
+        },
+        body: JSON.stringify({
+          nameClient: nameClient || this.nameClient,
+          doctor: doctor || this.doctor,
+          purposeOfTheVisit: purposeOfTheVisit || this.purposeVisit,
+          briefVisitDescr: briefVisitDescr || this.visitDescr,
+          urgency: urgency || this.urgency,
+          age: age || this.age || "",
+          bodyMassIndex: bodyMassIndex || this.bodyMassIndex || "",
+          bloodPressure: bloodPressure || this.bloodPressure || "",
+          pDCSystem: pastDiseasesCardiovascularSystem || this.pDCSystem || "",
+          dateOfLastVisit: dateOfLastVisit || this.dateOfLastVisit || ""
+        })
+      });
+
+
+      const updatedCardServer = await checkStatusResponse(responsePut);
+
+      console.log(updatedCardServer)
+
+      const updatedCardHtml = filterCardByDoctor(updatedCardServer);
+      deleteFromHtml(this.id)
+
+      updatedCardHtml.renderCard();
+      updatedCardHtml.addSpecialDetails();
+
+    }
+    catch (error) {
+      console.error(error);
+    }
+    finally {
+      hideSpinner()
+    };
+  }
+  /* Card Template */
+
+  templateCard() {
     const card = `
       <div class="card-element mb-3" style="max-width: 25rem" id="${this.id}">
         <div class="card border-warning shadow text-center col-xl" >
@@ -206,35 +210,27 @@ class Card {
           <div class="card-body">
             <p class="text-uppercase">${this.nameClient}</p>
             <p class="text-uppercase">${this.doctor}</p>
-            <button class="btn btn-edit btn-dark">
+            <button class="btn btn-dark" id="edit-${this.id}" data-bs-toggle="modal"
+            data-bs-target="#createVisitModal">
               <span class="text-uppercase text-warning">Edit card</span>
             </button>
             <button class="btn btn-warning" type="button" data-bs-toggle="collapse"
                 data-bs-target="#c${this.id}" aria-controls="c${this.id}">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
-                fill="currentColor"class="bi-arrow-down-square" 
-                viewBox="0 0 16 16">
-                <path fill-rule="evenodd"
-                d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 
-                2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 2.5a.5.5 0 0 0-1 
-                0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 
-                3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z" />
-              </svg>
+                <span>&#9660;</span>
             </button>
-              
             <div id="c${this.id}" class="collapse">
               <ul class="card-details mt-2 text-start">
                 <li>
                   <span class="text-warning">Urgency:</span>
-                  ${this.urgency}
+                  <span>${this.urgency}</span>
                 </li>
                 <li>
                   <span>Purpose of the Visit:</span>
-                  ${this.purposeVisit}
+                  <span>${this.purposeVisit}</span>
                 </li>
                 <li>
                   <span>Visit Description:</span>
-                  ${this.visitDescr}
+                  <span>${this.visitDescr}</span>
                 </li>
               </ul>
             </div>
@@ -244,45 +240,38 @@ class Card {
     `
     return card;
   };
-  /* удалить после когда все картчоки на сервере будут с определнными докторами */
-  renderSpecialDetails() {
-    console.log("Delete this.method when all cards will be with DEFIND DOCTOR");
-  }
-  /* добавление карточки в разметку */
+  /* Render Card */
   renderCard() {
-
     const cardsContent = document.querySelector(".cards-content");
-
     let fragment = this.templateCard();
-
     cardsContent.insertAdjacentHTML("afterbegin", fragment);
     this.addEventListener();
-
-  }
+  };
+  /* Add events on the btns */
   addEventListener() {
     const deleteBtn = document.getElementById(`delete-${this.id}`);
     deleteBtn.addEventListener('click', this.deleteCard.bind(this));
+
+    const editBtn = document.getElementById(`edit-${this.id}`);
+    editBtn.addEventListener('click', this.editCard.bind(this));
+
   }
 };
-
+/* Therapist */
 class TherapistCard extends Card {
-
   constructor({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr, age }) {
     super({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr })
     this.age = age;
   };
-  /* render details depends of doctor */
-  renderSpecialDetails() {
-
+  addSpecialDetails() {
     const detailsElements = [
       { text: "Age: ", value: this.age },
     ];
-    addSpecialDetails(detailsElements);
+    renderSpecialDetails(detailsElements);
   }
 };
-
+/* Cardiologist */
 class CardiologistCard extends Card {
-
   constructor({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr, bodyMassIndex, bloodPressure, pDCSystem, age }) {
     super({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr })
     this.bodyMassIndex = bodyMassIndex;
@@ -290,47 +279,30 @@ class CardiologistCard extends Card {
     this.pDCSystem = pDCSystem;
     this.age = age;
   };
-  /* render details depends of doctor */
-  renderSpecialDetails() {
-
+  addSpecialDetails() {
     const detailsElements = [
       { text: "Age: ", value: this.age },
       { text: "Body Mass Index: ", value: this.bodyMassIndex },
       { text: "Blood Pressure: ", value: this.bloodPressure },
       { text: "Cardiovascular system: ", value: this.pDCSystem }
     ];
-    addSpecialDetails(detailsElements);
+    renderSpecialDetails(detailsElements);
   }
 };
-
+/* Dentist */
 class DentistCard extends Card {
-
   constructor({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr, dateOfLastVisit }) {
     super({ id, nameClient, doctor, urgency, purposeOfTheVisit, briefVisitDescr })
     this.dateOfLastVisit = dateOfLastVisit;
   };
-
-  /* render details depends of doctor */
-  renderSpecialDetails() {
-
+  addSpecialDetails() {
     const detailsElements = [
       { text: "Date of last visit: ", value: this.dateOfLastVisit },
     ];
-    addSpecialDetails(detailsElements);
+    renderSpecialDetails(detailsElements);
   }
 };
-/* Add Speciall Details */
-function addSpecialDetails(detailsElements) {
 
-  const cardDetails = document.querySelector(".card-details");
-
-  detailsElements.forEach((element) => {
-    const template = `
-    <li><span>${element.text}</span>${element.value}</li>
-    `
-    cardDetails.insertAdjacentHTML("beforeend", template)
-  });
-}
 
 /* модальні вікна */
 
@@ -345,19 +317,20 @@ const createVisitDiv = document.querySelector('#create-visit-div');
 
 logIn.listenToInputs(logInModal, logInModalInputs, logInModalBtn);
 logInModalBtn.addEventListener('click', (ev) => {
-    ev.preventDefault();
-    if(logIn.checkInputs(logInModalInputs, logInModalBtn)) {
-        logInDiv.classList.toggle('hidden-element');
-        createVisitDiv.classList.toggle('hidden-element');
+  ev.preventDefault();
+  if (logIn.checkInputs(logInModalInputs, logInModalBtn)) {
+    logInDiv.classList.toggle('hidden-element');
+    createVisitDiv.classList.toggle('hidden-element');
 
-        getCards();        
-    } else {
-        logIn.addWarning();
-    }
+    getCards();
+  } else {
+    logIn.addWarning();
+  }
 })
 
 /* форма для створення візиту */
 const createVisit = new Modal('createVisitModal', 'create-visit-confirm', 'All mandatory fields must be filled!');
+
 const createVisitModal = createVisit.getModalContent();
 const createVisitInputs = createVisit.getModalInputs();
 const createVisitConfirmBtn = createVisit.getModalConfirmBtn();
@@ -367,35 +340,36 @@ const selectDoctorBtn = document.getElementById('select-doctor-btn');
 const visitForm = document.getElementById('visit-form');
 const visitAddInfo = document.querySelector('.visit-add-info');
 
+
 selectDoctorBtn.addEventListener('click', (ev) => {
-    ev.preventDefault();
-    showForm();
-    selectDoctorBtn.classList.add('disabled');
+  ev.preventDefault();
+  showForm();
+  selectDoctorBtn.classList.add('disabled');
 })
 
 function showForm() {
-    let formAddFields = '';
+  let formAddFields = '';
 
-    if (doctorSelect.value === 'therapist') {
-        formAddFields = `
+  if (doctorSelect.value === 'therapist') {
+    formAddFields = `
             <div class="mb-3">
                 <label for="visit-age" class="col-form-label">Patient age:</label>
                 <input type="text" class="form-control" id="visit-age">
             </div>
         `
-    }
+  }
 
-    if (doctorSelect.value === 'dentist') {
-        formAddFields = `
+  if (doctorSelect.value === 'dentist') {
+    formAddFields = `
             <div class="mb-3">
                 <label for="visit-last" class="col-form-label">Last visit:</label>
                 <input type="date" class="form-control" id="visit-last">
             </div>
         `
-    }
+  }
 
-    if (doctorSelect.value === 'cardiologist') {
-        formAddFields = `
+  if (doctorSelect.value === 'cardiologist') {
+    formAddFields = `
             <div class="mb-3">
                 <label for="visit-normal-pressure" class="col-form-label">Normal pressure:</label>
                 <input type="text" class="form-control" id="visit-normal-pressure">
@@ -413,88 +387,94 @@ function showForm() {
                 <input type="text" class="form-control" id="visit-age">
             </div>
         `
-    }
+  }
 
-    visitAddInfo.insertAdjacentHTML('afterbegin', formAddFields);
-    visitForm.classList.remove('hidden-element')
+  visitAddInfo.insertAdjacentHTML('afterbegin', formAddFields);
+  visitForm.classList.remove('hidden-element')
 }
 
 /* зміна полів форми для створення візиту */
 doctorSelect.addEventListener('change', () => {
-    clearForm();
+  clearForm();
 
-    const urgencySelect = document.getElementById('urgency');
-    urgencySelect.value = urgencySelect.children[0].value;
+  const urgencySelect = document.getElementById('urgency');
+  urgencySelect.value = urgencySelect.children[0].value;
 })
 
 /* підтвердження створення візиту*/
 createVisit.listenToInputs(createVisitModal, createVisitInputs, createVisitConfirmBtn);
 
 createVisitConfirmBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    if(createVisit.checkInputs(createVisitInputs, createVisitConfirmBtn)) {
-        postCards(createNewVisit());
-            
-        clearForm();
-        clearSelectFields();
-        createVisitConfirmBtn.removeAttribute('data-bs-dismiss', 'modal');
-    } else {
-        createVisit.addWarning();
-    }
+  e.preventDefault();
+
+  if (createVisit.checkInputs(createVisitInputs, createVisitConfirmBtn)) {
+    postCards(createNewVisit());
+    clearForm();
+    clearSelectFields();
+    createVisitConfirmBtn.removeAttribute('data-bs-dismiss', 'modal');
+  } else {
+    createVisit.addWarning();
+  }
 })
 
 /* скасування створення візиту*/
 const createVisitCancelBtn = document.getElementById('create-visit-cancel');
 createVisitCancelBtn.addEventListener('click', (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    clearForm();
-    clearSelectFields();
+  clearForm();
+  clearSelectFields();
+  /*!!! */
+  deleteModalConfirmBtnEdit()
 })
 
 /* очистка форми і всіх полів */
 function clearForm() {
-    hideForm();
-    deleteAddInfo();
-    deleteWarning();
-    clearInputFields();
-    selectDoctorBtn.classList.remove('disabled');
+  hideForm();
+  deleteAddInfo();
+  deleteWarning();
+  clearInputFields();
+
+  selectDoctorBtn.classList.remove('disabled');
 }
 
 function hideForm() {
-    visitForm.classList.add('hidden-element')
+  visitForm.classList.add('hidden-element');
+
 }
 
 function clearInputFields() {
-    const inputModalFields = document.querySelectorAll('input');
-    inputModalFields.forEach( field => { 
-        field.value = '';
-        field.style.borderColor = '';
-    });
+  const inputModalFields = document.querySelectorAll('input');
+  inputModalFields.forEach(field => {
+    field.value = '';
+    field.style.borderColor = '';
+  });
 }
 
 function clearSelectFields() {
-    const selectModalFields = document.querySelectorAll('select');
-    Array.from(selectModalFields).forEach(field => {
-        field.value = field.children[0].value;
-    })
+  const selectModalFields = document.querySelectorAll('select');
+  Array.from(selectModalFields).forEach(field => {
+    field.value = field.children[0].value;
+  })
 }
 
 function deleteAddInfo() {
-    Array.from(visitAddInfo.children).forEach(child => {
-        child.remove();
-    });
-    createVisitModal.querySelector('.warning') ? createVisitModal.querySelector('.warning').remove() : '';
+  Array.from(visitAddInfo.children).forEach(child => {
+    child.remove();
+  });
+  createVisitModal.querySelector('.warning') ? createVisitModal.querySelector('.warning').remove() : '';
 
 }
 
 function deleteWarning() {
-    document.querySelector('.warning') ? document.querySelector('.warning').remove() : '';
+  document.querySelector('.warning') ? document.querySelector('.warning').remove() : '';
 }
 
 document.addEventListener('click', (ev) => {
-    if(ev.target.classList.contains('modal')) {
-        clearForm();
-        clearSelectFields();
-    }
+  if (ev.target.classList.contains('modal')) {
+    clearForm();
+    clearSelectFields();
+    /* !!!!! */
+    deleteModalConfirmBtnEdit()
+  }
 })

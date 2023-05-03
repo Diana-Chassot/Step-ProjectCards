@@ -12,7 +12,7 @@ class Visit {
 class VisitTherapist extends Visit {
     constructor(nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, age) {
         super(nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency),
-        this.age = age
+        this.age = age 
     }
 }
 
@@ -22,14 +22,14 @@ class VisitCardiologist extends Visit {
         this.age = age,
         this.bodyMassIndex = bodyMassIndex,
         this.bloodPressure = bloodPressure,
-        this.pastDiseasesCardiovascularSystem = pastDiseasesCardiovascularSystem
+        this.pastDiseasesCardiovascularSystem = pastDiseasesCardiovascularSystem 
     }
 }
 
 class VisitDentist extends Visit {
     constructor(nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, dateOfLastVisit) {
         super(nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency),
-        this.dateOfLastVisit = dateOfLastVisit
+        this.dateOfLastVisit = dateOfLastVisit  
     }
 }
 
@@ -44,7 +44,7 @@ function createNewVisit() {
             document.getElementById('visit-purpose').value,
             document.getElementById('visit-description').value,
             document.getElementById('urgency').value,
-            document.getElementById('visit-age').value
+            document.getElementById('visit-age')?.value 
         )
     }
 
