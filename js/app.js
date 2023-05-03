@@ -1,6 +1,5 @@
 /* modules */
 import { Modal } from "./modal.js"
-/* !!!!! */
 import { Visit, VisitTherapist, VisitCardiologist, VisitDentist, createNewVisit } from "./visit.js"
 import { showSpinner, hideSpinner } from "./spinner.js"
 import { checkCardsExist } from "./check-cards-exist.js"
@@ -104,7 +103,7 @@ class Card {
     this.doctor = doctor;
     this.urgency = urgency;
     this.purposeVisit = purposeOfTheVisit,
-      this.visitDescr = briefVisitDescr;
+    this.visitDescr = briefVisitDescr;
   }
   /* delete card */
   async deleteCard() {
@@ -133,17 +132,14 @@ class Card {
   }
   /*  */
   addSpecialDetails() {
-    console.log("666");
+    console.log("We made it!");
   }
   /* Edit Card*/
   editCard() {
 
     createModalConfirmBtnEdit()
     const editVisitConfirmBtn = document.getElementById("edit-visit-confirm")
-    const inputModalFields = document.querySelectorAll('input');
-      inputModalFields.forEach(field => {
-        field.style.borderColor = '';
-      })
+    
     editVisitConfirmBtn.addEventListener('click', (e) => {
       e.preventDefault();
 
@@ -185,8 +181,6 @@ class Card {
 
 
       const updatedCardServer = await checkStatusResponse(responsePut);
-
-      console.log(updatedCardServer)
 
       const updatedCardHtml = filterCardByDoctor(updatedCardServer);
       deleteFromHtml(this.id)
@@ -429,7 +423,7 @@ createVisitCancelBtn.addEventListener('click', (e) => {
 
   clearForm();
   clearSelectFields();
-  /*!!! */
+
   deleteModalConfirmBtnEdit()
 })
 
@@ -479,7 +473,7 @@ document.addEventListener('click', (ev) => {
   if (ev.target.classList.contains('modal')) {
     clearForm();
     clearSelectFields();
-    /* !!!!! */
+
     deleteModalConfirmBtnEdit()
   }
 })
