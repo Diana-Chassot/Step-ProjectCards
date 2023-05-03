@@ -36,10 +36,10 @@ async function postCards({ nameClient, doctor, purposeOfTheVisit, briefVisitDesc
     });
 
     const card = await checkStatusResponse(response);
-    checkCardsExist(card);
     const newCard = filterCardByDoctor(card);
     newCard.renderCard();
-    newCard.addSpecialDetails()
+    newCard.addSpecialDetails();
+    
   }
 
   catch (error) {
@@ -47,6 +47,7 @@ async function postCards({ nameClient, doctor, purposeOfTheVisit, briefVisitDesc
   }
   finally {
     hideSpinner()
+    checkCardsExist();
   }
 };
 
@@ -63,12 +64,13 @@ async function getCards() {
       },
     });
     const cards = await checkStatusResponse(response);
-    checkCardsExist(cards);
+    
     cards.forEach(card => {
       const newCard = filterCardByDoctor(card);
       newCard.renderCard();
       newCard.addSpecialDetails();
     });
+    
   }
 
   catch (error) {
@@ -76,6 +78,7 @@ async function getCards() {
   }
   finally {
     hideSpinner()
+    checkCardsExist();
   }
 };
 /* Check and filter type of card */
@@ -117,6 +120,7 @@ class Card {
       });
       if (response.ok) {
         deleteFromHtml(this.id)
+        
       }
     }
     catch (error) {
@@ -124,6 +128,7 @@ class Card {
     }
     finally {
       hideSpinner()
+      checkCardsExist()
     }
   }
   /*  */

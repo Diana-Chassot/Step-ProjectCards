@@ -16,8 +16,11 @@ function deleteNoItemsMessage() {
 };
 
 /* Check if cards exist  */
-export function checkCardsExist(cards) {
-    if (cards.length === 0) {
+export function checkCardsExist() {
+    const container = document.querySelector('.cards-content');
+    const cardElements = container.querySelectorAll('.card-element');
+
+    if (cardElements.length === 0) {
         addNoItemsMessage()
     }
     else {
