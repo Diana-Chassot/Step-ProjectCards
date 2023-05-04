@@ -1,8 +1,7 @@
 class Modal {
-    constructor(id, btnId, text) {
+    constructor(id, btnId) {
         this.id = id;
         this.btnId = btnId;
-        this.text = text;
     };
 
     getModalContent() {
@@ -43,8 +42,8 @@ class Modal {
         })
     }
 
-    addWarning() {
-        this.getModalContent().querySelector('.warning') ? '' : this.getModalConfirmBtn().insertAdjacentHTML('beforebegin', `<p class='warning' style='color: red'>${this.text}</p>`);
+    addWarning(text) {
+        this.getModalContent().querySelector('.warning') ? '' : this.getModalConfirmBtn().insertAdjacentHTML('beforebegin', `<p class='warning' style='color: red'>${text}</p>`);
     }
 }
 

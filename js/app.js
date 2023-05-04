@@ -9,6 +9,9 @@ import { deleteFromHtml } from "./delete-elem-from-html.js"
 import { renderSpecialDetails } from "./render-speciall-details.js"
 import { deleteModalConfirmBtnEdit, createModalConfirmBtnEdit } from "./modal-confirm-btns.js"
 import { filterByKeyWord } from "./filter-key-word.js"
+import { doctorsList, filterByDoctor } from "./filter-by-doctor.js"
+import { urgencyList, filterByUrgency } from "./filter-by-urgency.js"
+
 /*Post Cards*/
 async function postCards({ nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, age,
   bodyMassIndex, bloodPressure, pastDiseasesCardiovascularSystem, dateOfLastVisit }) {
@@ -146,6 +149,7 @@ class Card {
 
       this.updateCard(createNewVisit())
       deleteModalConfirmBtnEdit()
+      clearForm();
     })
 
 
@@ -307,7 +311,7 @@ class DentistCard extends Card {
 /* модальні вікна */
 
 /* вхід */
-const logIn = new Modal('logInModal', 'log-in-btn-modal', 'Please enter your email and password to sign in!');
+const logIn = new Modal('logInModal', 'log-in-btn-modal');
 const logInModal = logIn.getModalContent();
 const logInModalInputs = logIn.getModalInputs();
 const logInModalBtn = logIn.getModalConfirmBtn();
@@ -325,12 +329,12 @@ logInModalBtn.addEventListener('click', (ev) => {
 
     getCards();
   } else {
-    logIn.addWarning();
+    logIn.addWarning('Please enter your email and password to sign in!');
   }
 })
 
 /* форма для створення візиту */
-const createVisit = new Modal('createVisitModal', 'create-visit-confirm', 'All mandatory fields must be filled!');
+const createVisit = new Modal('createVisitModal', 'create-visit-confirm');
 
 const createVisitModal = createVisit.getModalContent();
 const createVisitInputs = createVisit.getModalInputs();
@@ -414,7 +418,7 @@ createVisitConfirmBtn.addEventListener('click', (e) => {
     clearSelectFields();
     createVisitConfirmBtn.removeAttribute('data-bs-dismiss', 'modal');
   } else {
-    createVisit.addWarning();
+    createVisit.addWarning('All mandatory fields must be filled!');
   }
 })
 
@@ -482,58 +486,12 @@ document.addEventListener('click', (ev) => {
 
 
 /* фільтрація створених візитів за лікарем*/
-const doctorsList = document.getElementById('doctor-filter');
 doctorsList.addEventListener('change', filterByDoctor);
-function filterByDoctor() {
-    const cardsAll = Array.from(document.getElementById('all-cards').children);
-    cardsAll.forEach(card => {
-        card.style.display = '';
-
-        if(doctorsList.value === 'doctors') {
-            card.style.display = '';
-        } else if(doctorsList.value !== card.dataset.doctor) {
-            card.style.display = 'none';
-        }
-    })
-}
 
 /* фільтрація створених візитів за терміновістю*/
-const urgencyList = document.getElementById('urgency-filter');
 urgencyList.addEventListener('change', filterByUrgency);
-function filterByUrgency() {
-    const cardsAll = Array.from(document.getElementById('all-cards').children);
-    cardsAll.forEach(card => {
-        card.style.display = '';
 
-        if(urgencyList.value === 'urgency') {
-            card.style.display = '';
-        } else if(urgencyList.value !== card.dataset.urgency) {
-            card.style.display = 'none';
-        }
-    })
-}
 
-// const urgencyList = document.getElementById('urgency-filter');
-// urgencyList.addEventListener('change', () => {filterByUrgency('urgency')});
-// function filterByUrgency(param) {
-//     const filterParam = `${param}-filter`;
-//     const filterList = document.getElementById(`${filterParam}`);
-//     console.log(filterList.value);
-
-//     const cardsAll = Array.from(document.getElementById('all-cards').children);
-
-//     cardsAll.forEach(card => {
-//         const cardDataset = `card.dataset.${param}`;
-//         console.log(cardDataset)
-//         // card.style.display = '';
-
-//         // if(filterList.value === 'urgency' || filterList.value === 'doctors') {
-//         //     card.style.display = '';
-//         // } else if(filterList.value !== `card.dataset.${param}`) {
-//         //     card.style.display = 'none';
-//         // }
-//     })
-// }
 const autocompleteInput = document.getElementById("autocomplete-input");
 autocompleteInput.addEventListener("input", function() {
   filterByKeyWord(autocompleteInput);
