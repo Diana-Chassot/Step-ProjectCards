@@ -371,11 +371,10 @@ function onPasswordInput() {
 logInModal.addEventListener('input', onAllInputs);
 function onAllInputs() {
     if(isValid(adminEmail.value, admin.email) && isValid(adminPassword.value, admin.password)) {
-        logInModalBtn.classList.remove('disabled');
         logInModalBtn.setAttribute('data-bs-dismiss', 'modal');
         logInModal.querySelector('.warning') ? logInModal.querySelector('.warning').remove() : '';                
     } else {
-        logInModalBtn.classList.add('disabled')
+        logInModalBtn.removeAttribute('data-bs-dismiss', 'modal');
     }
 }
 
