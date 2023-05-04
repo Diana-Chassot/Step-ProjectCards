@@ -319,19 +319,65 @@ const logInModalBtn = logIn.getModalConfirmBtn();
 const logInDiv = document.querySelector('#log-in-div');
 const createVisitDiv = document.querySelector('#create-visit-div');
 
+/* перевірка логіна і пароля */
+const admin = {
+    email: 'admin@gmail.com',
+    password: 'Admin'
+}
+
 logIn.listenToInputs(logInModal, logInModalInputs, logInModalBtn);
 logInModalBtn.addEventListener('click', (ev) => {
-  ev.preventDefault();
-  if (logIn.checkInputs(logInModalInputs, logInModalBtn)) {
-    logInDiv.classList.toggle('hidden-element');
-    createVisitDiv.classList.toggle('hidden-element');
-    document.getElementById('filter-conditions').style.display = 'flex';
+    ev.preventDefault();
 
-    getCards();
-  } else {
-    logIn.addWarning('Please enter your email and password to sign in!');
-  }
+    if(logIn.checkInputs(logInModalInputs, logInModalBtn) && isEmailValid(adminEmail.value) && isPasswordValid(adminPassword.value)) {
+        logInDiv.classList.toggle('hidden-element');
+        createVisitDiv.classList.toggle('hidden-element');
+        document.getElementById('filter-conditions').style.display = 'flex';
+    
+        getCards(); 
+    }
+
+    if (!logIn.checkInputs(logInModalInputs, logInModalBtn)) {
+        logIn.addWarning('Please enter your email and password to sign in!');
+    }
 })
+
+const adminEmail = document.getElementById('user-email');
+function isEmailValid(value) {
+    return (value === admin.email)
+}
+adminEmail.addEventListener('input', onEmailInput);
+function onEmailInput() {
+    if (isEmailValid(adminEmail.value)) {
+        document.getElementById('log-in-form').querySelector('.email-not-valid') ? document.getElementById('log-in-form').querySelector('.email-not-valid').remove() : '';
+    } else {
+        document.getElementById('log-in-form').querySelector('.email-not-valid') ? '' : adminEmail.insertAdjacentHTML('afterend', `<p class='email-not-valid'>Email is not valid!</p>`)
+    }
+}
+
+const adminPassword = document.getElementById('user-password');
+function isPasswordValid(value) {
+    return (value === admin.password)
+}
+adminPassword.addEventListener('input', onPasswordInput);
+function onPasswordInput() {
+    if (isPasswordValid(adminPassword.value)) {
+        document.getElementById('log-in-form').querySelector('.password-not-valid') ? document.getElementById('log-in-form').querySelector('.password-not-valid').remove() : '';
+    } else {
+        document.getElementById('log-in-form').querySelector('.password-not-valid') ? '' : adminPassword.insertAdjacentHTML('afterend', `<p class='password-not-valid'>Password is not valid!</p>`)
+    }
+}
+
+document.getElementById('log-in-form').addEventListener('input', onInput);
+function onInput() {
+    if(isEmailValid(adminEmail.value) && isPasswordValid(adminPassword.value)) {
+        logInModalBtn.classList.remove('disabled');
+        logInModalBtn.setAttribute('data-bs-dismiss', 'modal');
+        logInModal.querySelector('.warning') ? logInModal.querySelector('.warning').remove() : '';                
+    } else {
+        logInModalBtn.classList.add('disabled')
+    }
+}
 
 /* форма для створення візиту */
 const createVisit = new Modal('createVisitModal', 'create-visit-confirm');
