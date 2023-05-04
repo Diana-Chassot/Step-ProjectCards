@@ -11,6 +11,7 @@ import { deleteModalConfirmBtnEdit, createModalConfirmBtnEdit } from "./modal-co
 import { filterByKeyWord } from "./filter-key-word.js"
 import { doctorsList, filterByDoctor } from "./filter-by-doctor.js"
 import { urgencyList, filterByUrgency } from "./filter-by-urgency.js"
+import { clearInputFields, clearSelectFields } from './clear-form.js'
 
 /*Post Cards*/
 async function postCards({ nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, age,
@@ -319,19 +320,63 @@ const logInModalBtn = logIn.getModalConfirmBtn();
 const logInDiv = document.querySelector('#log-in-div');
 const createVisitDiv = document.querySelector('#create-visit-div');
 
+/* перевірка логіна і пароля */
+const admin = {
+    email: 'admin@gmail.com',
+    password: 'Admin'
+}
+
 logIn.listenToInputs(logInModal, logInModalInputs, logInModalBtn);
 logInModalBtn.addEventListener('click', (ev) => {
-  ev.preventDefault();
-  if (logIn.checkInputs(logInModalInputs, logInModalBtn)) {
-    logInDiv.classList.toggle('hidden-element');
-    createVisitDiv.classList.toggle('hidden-element');
-    document.getElementById('filter-conditions').style.display = 'flex';
+    ev.preventDefault();
 
-    getCards();
-  } else {
-    logIn.addWarning('Please enter your email and password to sign in!');
-  }
+    if(logIn.checkInputs(logInModalInputs, logInModalBtn) && isValid(adminEmail.value, admin.email) && isValid(adminPassword.value, admin.password)) {
+        logInDiv.classList.toggle('hidden-element');
+        createVisitDiv.classList.toggle('hidden-element');
+        document.getElementById('filter-conditions').style.display = 'flex';
+    
+        getCards(); 
+    }
+
+    if (!logIn.checkInputs(logInModalInputs, logInModalBtn)) {
+        logIn.addWarning('Please enter your email and password to sign in!');
+    }
 })
+
+function isValid(inputValue, value) {
+    return (inputValue === value)
+}
+
+const adminEmail = document.getElementById('user-email');
+const adminPassword = document.getElementById('user-password');
+
+adminEmail.addEventListener('input', onEmailInput);
+function onEmailInput() {
+    if (isValid(adminEmail.value, admin.email)) {
+        logInModal.querySelector('.email-not-valid') ? logInModal.querySelector('.email-not-valid').remove() : '';
+    } else {
+        logInModal.querySelector('.email-not-valid') ? '' : adminEmail.insertAdjacentHTML('afterend', `<p class='email-not-valid'>Email is not valid!</p>`)
+    }
+}
+
+adminPassword.addEventListener('input', onPasswordInput);
+function onPasswordInput() {
+    if (isValid(adminPassword.value, admin.password)) {
+        logInModal.querySelector('.password-not-valid') ? logInModal.querySelector('.password-not-valid').remove() : '';
+    } else {
+        logInModal.querySelector('.password-not-valid') ? '' : adminPassword.insertAdjacentHTML('afterend', `<p class='password-not-valid'>Password is not valid!</p>`)
+    }
+}
+
+logInModal.addEventListener('input', onAllInputs);
+function onAllInputs() {
+    if(isValid(adminEmail.value, admin.email) && isValid(adminPassword.value, admin.password)) {
+        logInModalBtn.setAttribute('data-bs-dismiss', 'modal');
+        logInModal.querySelector('.warning') ? logInModal.querySelector('.warning').remove() : '';                
+    } else {
+        logInModalBtn.removeAttribute('data-bs-dismiss', 'modal');
+    }
+}
 
 /* форма для створення візиту */
 const createVisit = new Modal('createVisitModal', 'create-visit-confirm');
@@ -344,7 +389,6 @@ const doctorSelect = document.getElementById('doctor');
 const selectDoctorBtn = document.getElementById('select-doctor-btn');
 const visitForm = document.getElementById('visit-form');
 const visitAddInfo = document.querySelector('.visit-add-info');
-
 
 selectDoctorBtn.addEventListener('click', (ev) => {
   ev.preventDefault();
@@ -445,22 +489,6 @@ function clearForm() {
 
 function hideForm() {
   visitForm.classList.add('hidden-element');
-
-}
-
-function clearInputFields() {
-  const inputModalFields = document.querySelectorAll('input');
-  inputModalFields.forEach(field => {
-    field.value = '';
-    field.style.borderColor = '';
-  });
-}
-
-function clearSelectFields() {
-  const selectModalFields = document.querySelectorAll('select');
-  Array.from(selectModalFields).forEach(field => {
-    field.value = field.children[0].value;
-  })
 }
 
 function deleteAddInfo() {
@@ -468,7 +496,6 @@ function deleteAddInfo() {
     child.remove();
   });
   createVisitModal.querySelector('.warning') ? createVisitModal.querySelector('.warning').remove() : '';
-
 }
 
 function deleteWarning() {
@@ -483,7 +510,6 @@ document.addEventListener('click', (ev) => {
     deleteModalConfirmBtnEdit()
   }
 })
-
 
 /* фільтрація створених візитів за лікарем*/
 doctorsList.addEventListener('change', filterByDoctor);
