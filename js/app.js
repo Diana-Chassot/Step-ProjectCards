@@ -11,6 +11,7 @@ import { deleteModalConfirmBtnEdit, createModalConfirmBtnEdit } from "./modal-co
 import { filterByKeyWord } from "./filter-key-word.js"
 import { doctorsList, filterByDoctor } from "./filter-by-doctor.js"
 import { urgencyList, filterByUrgency } from "./filter-by-urgency.js"
+import { clearInputFields, clearSelectFields } from './clear-form.js'
 
 /*Post Cards*/
 async function postCards({ nameClient, doctor, purposeOfTheVisit, briefVisitDescr, urgency, age,
@@ -329,7 +330,7 @@ logIn.listenToInputs(logInModal, logInModalInputs, logInModalBtn);
 logInModalBtn.addEventListener('click', (ev) => {
     ev.preventDefault();
 
-    if(logIn.checkInputs(logInModalInputs, logInModalBtn) && isEmailValid(adminEmail.value) && isPasswordValid(adminPassword.value)) {
+    if(logIn.checkInputs(logInModalInputs, logInModalBtn) && isValid(adminEmail.value, admin.email) && isValid(adminPassword.value, admin.password)) {
         logInDiv.classList.toggle('hidden-element');
         createVisitDiv.classList.toggle('hidden-element');
         document.getElementById('filter-conditions').style.display = 'flex';
@@ -342,35 +343,34 @@ logInModalBtn.addEventListener('click', (ev) => {
     }
 })
 
-const adminEmail = document.getElementById('user-email');
-function isEmailValid(value) {
-    return (value === admin.email)
+function isValid(inputValue, value) {
+    return (inputValue === value)
 }
+
+const adminEmail = document.getElementById('user-email');
+const adminPassword = document.getElementById('user-password');
+
 adminEmail.addEventListener('input', onEmailInput);
 function onEmailInput() {
-    if (isEmailValid(adminEmail.value)) {
-        document.getElementById('log-in-form').querySelector('.email-not-valid') ? document.getElementById('log-in-form').querySelector('.email-not-valid').remove() : '';
+    if (isValid(adminEmail.value, admin.email)) {
+        logInModal.querySelector('.email-not-valid') ? logInModal.querySelector('.email-not-valid').remove() : '';
     } else {
-        document.getElementById('log-in-form').querySelector('.email-not-valid') ? '' : adminEmail.insertAdjacentHTML('afterend', `<p class='email-not-valid'>Email is not valid!</p>`)
+        logInModal.querySelector('.email-not-valid') ? '' : adminEmail.insertAdjacentHTML('afterend', `<p class='email-not-valid'>Email is not valid!</p>`)
     }
 }
 
-const adminPassword = document.getElementById('user-password');
-function isPasswordValid(value) {
-    return (value === admin.password)
-}
 adminPassword.addEventListener('input', onPasswordInput);
 function onPasswordInput() {
-    if (isPasswordValid(adminPassword.value)) {
-        document.getElementById('log-in-form').querySelector('.password-not-valid') ? document.getElementById('log-in-form').querySelector('.password-not-valid').remove() : '';
+    if (isValid(adminPassword.value, admin.password)) {
+        logInModal.querySelector('.password-not-valid') ? logInModal.querySelector('.password-not-valid').remove() : '';
     } else {
-        document.getElementById('log-in-form').querySelector('.password-not-valid') ? '' : adminPassword.insertAdjacentHTML('afterend', `<p class='password-not-valid'>Password is not valid!</p>`)
+        logInModal.querySelector('.password-not-valid') ? '' : adminPassword.insertAdjacentHTML('afterend', `<p class='password-not-valid'>Password is not valid!</p>`)
     }
 }
 
-document.getElementById('log-in-form').addEventListener('input', onInput);
-function onInput() {
-    if(isEmailValid(adminEmail.value) && isPasswordValid(adminPassword.value)) {
+logInModal.addEventListener('input', onAllInputs);
+function onAllInputs() {
+    if(isValid(adminEmail.value, admin.email) && isValid(adminPassword.value, admin.password)) {
         logInModalBtn.classList.remove('disabled');
         logInModalBtn.setAttribute('data-bs-dismiss', 'modal');
         logInModal.querySelector('.warning') ? logInModal.querySelector('.warning').remove() : '';                
@@ -390,7 +390,6 @@ const doctorSelect = document.getElementById('doctor');
 const selectDoctorBtn = document.getElementById('select-doctor-btn');
 const visitForm = document.getElementById('visit-form');
 const visitAddInfo = document.querySelector('.visit-add-info');
-
 
 selectDoctorBtn.addEventListener('click', (ev) => {
   ev.preventDefault();
@@ -491,22 +490,6 @@ function clearForm() {
 
 function hideForm() {
   visitForm.classList.add('hidden-element');
-
-}
-
-function clearInputFields() {
-  const inputModalFields = document.querySelectorAll('input');
-  inputModalFields.forEach(field => {
-    field.value = '';
-    field.style.borderColor = '';
-  });
-}
-
-function clearSelectFields() {
-  const selectModalFields = document.querySelectorAll('select');
-  Array.from(selectModalFields).forEach(field => {
-    field.value = field.children[0].value;
-  })
 }
 
 function deleteAddInfo() {
@@ -514,7 +497,6 @@ function deleteAddInfo() {
     child.remove();
   });
   createVisitModal.querySelector('.warning') ? createVisitModal.querySelector('.warning').remove() : '';
-
 }
 
 function deleteWarning() {
@@ -529,7 +511,6 @@ document.addEventListener('click', (ev) => {
     deleteModalConfirmBtnEdit()
   }
 })
-
 
 /* фільтрація створених візитів за лікарем*/
 doctorsList.addEventListener('change', filterByDoctor);
