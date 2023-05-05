@@ -13,12 +13,16 @@ Marianna Haleliuka , Diana Chassot
 * JavaScript;
 
 #### Tasks executed by each participant:
-*  Diana
+*  Diana:
 
 1. "Card describing the visit";
-2. "AJAX requests".
-3. "Filter by keyword"
+2. "AJAX requests";
+3. "Filter by keyword";
+4. "Classes "Card", "TherapistCard", "CardiologistCard", "DentistCard".
 
-*  Marianna.
+*  Marianna:
 
- Данные Марианны 
+1. "Modals for Log in and Create visit";
+2. "Filter by doctor and urgency";
+3. "Class Modal";
+4. "Classes "Visit", "VisitTherapist", "VisitCardiologist", "VisitDentist".
