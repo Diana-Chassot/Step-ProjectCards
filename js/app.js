@@ -336,10 +336,14 @@ logInModalBtn.addEventListener('click', (ev) => {
         document.getElementById('filter-conditions').style.display = 'flex';
     
         getCards(); 
-    }
-
-    if (!logIn.checkInputs(logInModalInputs, logInModalBtn)) {
-        logIn.addWarning('Please enter your email and password to sign in!');
+    } else {
+        if (!logIn.checkInputs(logInModalInputs, logInModalBtn)) {
+            logIn.addWarning('Please enter your email and password to sign in!');
+        } else if (!isValid(adminEmail.value, admin.email)) {
+            logIn.addWarning('Email is not registered!');
+        } else if (!isValid(adminPassword.value, admin.password)) {
+            logIn.addWarning('Password is not correct!');
+        }
     }
 })
 
@@ -349,24 +353,6 @@ function isValid(inputValue, value) {
 
 const adminEmail = document.getElementById('user-email');
 const adminPassword = document.getElementById('user-password');
-
-adminEmail.addEventListener('input', onEmailInput);
-function onEmailInput() {
-    if (isValid(adminEmail.value, admin.email)) {
-        logInModal.querySelector('.email-not-valid') ? logInModal.querySelector('.email-not-valid').remove() : '';
-    } else {
-        logInModal.querySelector('.email-not-valid') ? '' : adminEmail.insertAdjacentHTML('afterend', `<p class='email-not-valid'>Email is not valid!</p>`)
-    }
-}
-
-adminPassword.addEventListener('input', onPasswordInput);
-function onPasswordInput() {
-    if (isValid(adminPassword.value, admin.password)) {
-        logInModal.querySelector('.password-not-valid') ? logInModal.querySelector('.password-not-valid').remove() : '';
-    } else {
-        logInModal.querySelector('.password-not-valid') ? '' : adminPassword.insertAdjacentHTML('afterend', `<p class='password-not-valid'>Password is not valid!</p>`)
-    }
-}
 
 logInModal.addEventListener('input', onAllInputs);
 function onAllInputs() {
