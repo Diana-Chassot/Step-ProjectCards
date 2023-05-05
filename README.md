@@ -1,6 +1,6 @@
 # Step-Project "Cards"
 
-* Marianna Haleliuka , * Diana Chassot
+Marianna Haleliuka , Diana Chassot
 
 #### Login
 * email: 'admin@gmail.com'
