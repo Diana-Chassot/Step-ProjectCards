@@ -1,0 +1,61 @@
+/* general  */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Robotto", sans-serif;
+  background-image: url(../bg.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.logo-img{
+  width: 250px;
+}
+
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+header {
+  height: 160px;
+}
+
+.logo-img {
+  max-height: 150px;
+}
+
+
+.btn-close{
+  width: 4px;
+  height: 3px;
+  position: absolute;
+  top: 1.3%;
+  right:1.3%;
+}
+
+.spinner{
+  display: none;
+}
+
+.hidden-element {
+    display: none;
+}
+@media screen and (max-width: 660px) {
+  header {
+    height: 100px;
+}
+  #filter-conditions{
+    flex-wrap: wrap;
+  justify-content: flex-start !important;
+  }
+  .logo-img{
+    width: 140px;
+  }
+}
