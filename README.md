@@ -1,10 +1,10 @@
 # Step-Project "Cards"
 
-* Marianna Haleliuka ,Diana Chassot
+* Marianna Haleliuka , * Diana Chassot
 
 #### Login
-##### email: 'admin@gmail.com'
-##### password: 'Admin'
+* email: 'admin@gmail.com'
+* password: 'Admin'
 
 #### Technologies used in the project:
 * HTML;
@@ -21,4 +21,4 @@
 
 *  Marianna.
 
-<!-- Данные Марианны -->
+ Данные Марианны 
